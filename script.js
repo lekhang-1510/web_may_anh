@@ -66,7 +66,7 @@ function autoPlaySlider() {
   autoPlayInterval = setInterval(() => {
     currentSlide++;
     showSlide(currentSlide);
-  }, 5000); // Change slide every 5 seconds
+  }, 2000); // Change slide every 2 seconds
 }
 
 // Initialize on page load
