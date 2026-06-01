@@ -150,60 +150,254 @@
   <div class="checkout-modal" id="checkoutModal">
     <div class="checkout-box">
       <button class="close-checkout" id="closeCheckout">&times;</button>
-      <h2>Thanh Toán</h2>
-
-      <div class="checkout-items" id="checkoutItems"></div>
-
-      <div class="checkout-total">
-        <strong>Tổng cộng:</strong>
-        <span id="checkoutTotal">0đ</span>
-      </div>
+      <h2>Thanh Toán Đơn Hàng</h2>
 
       <form id="checkoutForm" class="checkout-form">
-        <div class="form-layout">
-          <!-- LEFT: Customer Info -->
-          <div class="form-left">
-            <h3>Thông tin giao hàng</h3>
-            <input type="text" id="customerName" placeholder="Họ và tên" required />
-            <input type="text" id="customerPhone" placeholder="Số điện thoại" required />
-            <input type="text" id="customerAddress" placeholder="Địa chỉ giao hàng" required />
-            <textarea id="customerNote" placeholder="Ghi chú thêm (nếu có)"></textarea>
+        <div class="checkout-grid">
+          
+          <!-- COLUMN 1: CUSTOMER INFO & SHIPPING -->
+          <div class="checkout-column customer-column">
+            <div class="column-header">
+              <span class="step-badge">1</span>
+              <h3>Thông tin giao hàng</h3>
+            </div>
+            
+            <div class="form-group-custom">
+              <label for="customerName"><i class="fa-solid fa-user"></i> Họ và tên *</label>
+              <input type="text" id="customerName" placeholder="Nhập đầy đủ họ và tên" required />
+            </div>
+
+            <div class="form-group-custom">
+              <label for="customerPhone"><i class="fa-solid fa-phone"></i> Số điện thoại *</label>
+              <input type="tel" id="customerPhone" placeholder="Nhập số điện thoại nhận hàng" required />
+            </div>
+
+            <div class="form-group-custom">
+              <label for="customerEmail"><i class="fa-solid fa-envelope"></i> Địa chỉ Email</label>
+              <input type="email" id="customerEmail" placeholder="Nhập email để nhận hóa đơn" />
+            </div>
+
+            <div class="address-selector">
+              <div class="form-group-custom">
+                <label for="checkoutProvince"><i class="fa-solid fa-map-location-dot"></i> Tỉnh / Thành phố *</label>
+                <select id="checkoutProvince" required>
+                  <option value="">-- Chọn Tỉnh / Thành phố --</option>
+                </select>
+              </div>
+
+              <div class="form-group-custom">
+                <label for="checkoutDistrict"><i class="fa-solid fa-map"></i> Quận / Huyện *</label>
+                <select id="checkoutDistrict" required disabled>
+                  <option value="">-- Chọn Quận / Huyện --</option>
+                </select>
+              </div>
+
+              <div class="form-group-custom">
+                <label for="checkoutWard"><i class="fa-solid fa-location-dot"></i> Phường / Xã *</label>
+                <select id="checkoutWard" required disabled>
+                  <option value="">-- Chọn Phường / Xã --</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group-custom">
+              <label for="customerAddressDetail"><i class="fa-solid fa-house"></i> Số nhà, tên đường *</label>
+              <input type="text" id="customerAddressDetail" placeholder="VD: 123 Đường Nguyễn Huệ" required />
+            </div>
+
+            <div class="form-group-custom">
+              <label for="customerNote"><i class="fa-solid fa-note-sticky"></i> Ghi chú đơn hàng</label>
+              <textarea id="customerNote" placeholder="Ghi chú thêm về thời gian giao hàng, chỉ dẫn..." rows="3"></textarea>
+            </div>
           </div>
 
-          <!-- RIGHT: Payment Methods & Total -->
-          <div class="form-right">
-            <h3>Phương thức thanh toán</h3>
-            <div class="payment-methods">
-              <label class="payment-label">
+          <!-- COLUMN 2: PAYMENT METHOD & INSTALLMENTS -->
+          <div class="checkout-column payment-column">
+            <div class="column-header">
+              <span class="step-badge">2</span>
+              <h3>Phương thức thanh toán</h3>
+            </div>
+
+            <div class="payment-tabs">
+              <label class="payment-tab-option">
                 <input type="radio" name="payment" value="cash" checked />
-                <span class="payment-option">💵 Tiền mặt</span>
+                <span class="tab-card">
+                  <span class="tab-icon">💵</span>
+                  <span class="tab-text">
+                    <strong>Tiền mặt (COD)</strong>
+                    <small>Thanh toán khi nhận hàng</small>
+                  </span>
+                </span>
               </label>
-              <label class="payment-label">
+
+              <label class="payment-tab-option">
                 <input type="radio" name="payment" value="bank-qr" />
-                <span class="payment-option">🔲 QR Ngân hàng</span>
+                <span class="tab-card">
+                  <span class="tab-icon">🔲</span>
+                  <span class="tab-text">
+                    <strong>Chuyển khoản VietQR</strong>
+                    <small>Quét mã chuyển khoản tức thì</small>
+                  </span>
+                </span>
               </label>
-              <label class="payment-label">
-                <input type="radio" name="payment" value="card" />
-                <span class="payment-option">💳 Thẻ tín dụng</span>
+
+              <label class="payment-tab-option">
+                <input type="radio" name="payment" value="installment" />
+                <span class="tab-card">
+                  <span class="tab-icon">💳</span>
+                  <span class="tab-text">
+                    <strong>Trả góp 0%</strong>
+                    <small>Qua thẻ tín dụng của bạn</small>
+                  </span>
+                </span>
               </label>
-              <label class="payment-label">
+
+              <label class="payment-tab-option">
                 <input type="radio" name="payment" value="ewallet" />
-                <span class="payment-option">💼 E-wallet</span>
+                <span class="tab-card">
+                  <span class="tab-icon">💼</span>
+                  <span class="tab-text">
+                    <strong>Ví điện tử / ATM</strong>
+                    <small>Thanh toán MoMo / ZaloPay / Visa</small>
+                  </span>
+                </span>
               </label>
             </div>
 
-            <div class="total-box">
-              <span>Tổng cộng:</span>
-              <span id="checkoutTotalRight" class="total-amount">0đ</span>
+            <!-- DYNAMIC PAYMENT DETAILS AREAS -->
+            <div class="payment-dynamic-details">
+              <!-- COD details -->
+              <div class="dynamic-area active" id="area-cash">
+                <p class="payment-desc-info">📦 Quý khách sẽ thanh toán bằng tiền mặt trực tiếp cho nhân viên giao hàng sau khi nhận và kiểm tra thiết bị máy ảnh.</p>
+              </div>
+
+              <!-- VietQR details -->
+              <div class="dynamic-area" id="area-bank-qr">
+                <div class="qr-container-box">
+                  <div class="qr-code-wrapper">
+                    <img id="vietQrImg" src="" alt="Mã VietQR Thanh Toán" />
+                    <div class="qr-loading">Đang tạo mã QR thanh toán...</div>
+                  </div>
+                  <div class="qr-details-text">
+                    <p><strong>Ngân hàng:</strong> MB Bank (Quân Đội)</p>
+                    <p><strong>Số tài khoản:</strong> 190820268888</p>
+                    <p><strong>Chủ tài khoản:</strong> KNG STORE - LE KHANG</p>
+                    <p><strong>Nội dung CK:</strong> <span class="highlight-code" id="vietQrMsg">KNG123456</span></p>
+                    <small class="scan-instructions"><i class="fa-solid fa-circle-info"></i> Hãy dùng ứng dụng Mobile Banking quét mã QR để điền tự động 100% số tiền & nội dung.</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Installments details -->
+              <div class="dynamic-area" id="area-installment">
+                <div class="installment-box-selector">
+                  <div class="form-group-custom">
+                    <label for="installmentBank">Ngân hàng trả góp:</label>
+                    <select id="installmentBank">
+                      <option value="Vietcombank">Vietcombank</option>
+                      <option value="Techcombank">Techcombank</option>
+                      <option value="VPBank">VPBank</option>
+                      <option value="ACB">ACB Bank</option>
+                      <option value="Sacombank">Sacombank</option>
+                      <option value="HSBC">HSBC</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group-custom">
+                    <label for="installmentTerm">Kỳ hạn trả góp:</label>
+                    <select id="installmentTerm">
+                      <option value="3">3 tháng (0% lãi suất)</option>
+                      <option value="6">6 tháng (0% lãi suất)</option>
+                      <option value="9">9 tháng (0% lãi suất)</option>
+                      <option value="12">12 tháng (0% lãi suất)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="installment-calc-table">
+                  <h4><i class="fa-solid fa-calculator"></i> Bảng tính trả góp dự kiến</h4>
+                  <div class="calc-row">
+                    <span>Giá trị máy ảnh:</span>
+                    <span id="instTotalValue">0đ</span>
+                  </div>
+                  <div class="calc-row">
+                    <span>Phí chuyển đổi trả góp (2%):</span>
+                    <span id="instConversionFee">0đ</span>
+                  </div>
+                  <div class="calc-row total-calc-row">
+                    <span>Mỗi tháng trả góp:</span>
+                    <span class="inst-monthly-amount" id="instMonthlyPay">0đ / tháng</span>
+                  </div>
+                  <small class="inst-notice">* Số tiền trên đã bao gồm thuế và phí chuyển đổi hồ sơ trả góp 0%.</small>
+                </div>
+              </div>
+
+              <!-- E-wallet details -->
+              <div class="dynamic-area" id="area-ewallet">
+                <div class="ewallet-selector-box">
+                  <div class="ewallet-logo-select active" data-wallet="momo">
+                    <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="Ví MoMo" />
+                    <span>Ví MoMo</span>
+                  </div>
+                  <div class="ewallet-logo-select" data-wallet="zalopay">
+                    <img src="https://images.careerbuilder.vn/employer_folders/lot1/224641/116248zalopay-01.png" alt="ZaloPay" />
+                    <span>ZaloPay</span>
+                  </div>
+                  <div class="ewallet-logo-select" data-wallet="visa">
+                    <i class="fa-brands fa-cc-visa" style="color: #1a1f71; font-size: 24px;"></i>
+                    <span>Visa/Master</span>
+                  </div>
+                </div>
+                <div class="ewallet-payment-instruction">
+                  <p><i class="fa-solid fa-circle-check"></i> Trình duyệt sẽ tự động kết nối với ứng dụng ví hoặc cổng thanh toán tương ứng an toàn sau khi bạn đặt hàng.</p>
+                </div>
+              </div>
             </div>
           </div>
+
+          <!-- COLUMN 3: ORDER SUMMARY & COUPON -->
+          <div class="checkout-column summary-column">
+            <div class="column-header">
+              <span class="step-badge">3</span>
+              <h3>Tóm tắt đơn hàng</h3>
+            </div>
+
+            <!-- Checkout Items list -->
+            <div class="checkout-summary-list" id="checkoutItems"></div>
+
+            <!-- Coupon Box -->
+            <div class="coupon-container">
+              <div class="coupon-input-group">
+                <input type="text" id="couponCode" placeholder="Nhập mã giảm giá (VD: KNGSUMMER)" autocomplete="off" />
+                <button type="button" id="applyCouponBtn">Áp dụng</button>
+              </div>
+              <div id="couponMessage" class="coupon-message"></div>
+            </div>
+
+            <!-- Pricing Breakdown -->
+            <div class="checkout-pricing-breakdown">
+              <div class="price-row">
+                <span>Tạm tính:</span>
+                <span id="checkoutSubtotal">0đ</span>
+              </div>
+              <div class="price-row discount-row" style="display: none;">
+                <span>Giảm giá (<span id="couponPercent">0%</span>):</span>
+                <span id="checkoutDiscount">-0đ</span>
+              </div>
+              <div class="price-row total-row">
+                <span>Tổng tiền thanh toán:</span>
+                <span id="checkoutTotal">0đ</span>
+              </div>
+            </div>
+
+            <!-- Place Order Button -->
+            <button type="submit" class="checkout-btn">
+              <i class="fa-solid fa-lock"></i> Đặt Hàng & Thanh Toán
+            </button>
+            <p class="secure-checkout-text"><i class="fa-solid fa-shield-halved"></i> Hệ thống mã hóa thông tin thanh toán SSL an toàn 100%.</p>
+          </div>
+
         </div>
-
-        <div id="paymentStatus" class="payment-status" style="display: none"></div>
-
-        <button type="submit" class="checkout-btn">
-          Xác nhận thanh toán
-        </button>
       </form>
     </div>
   </div>

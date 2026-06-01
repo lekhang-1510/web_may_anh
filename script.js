@@ -126,9 +126,9 @@ function formatPrice(number) {
   return number.toLocaleString("vi-VN") + "đ";
 }
 
-// =========================
-// SHOW CHECKOUT MODAL
-// =========================
+// Track coupon discount globally
+let couponDiscount = 0; // percentage e.g. 10 = 10%
+
 function showCartItems() {
   if (cart.length === 0) {
     showNotification("Giỏ hàng của bạn đang trống.");
@@ -137,43 +137,391 @@ function showCartItems() {
 
   const checkoutModal = document.getElementById("checkoutModal");
   const checkoutItems = document.getElementById("checkoutItems");
+  const checkoutSubtotal = document.getElementById("checkoutSubtotal");
   const checkoutTotal = document.getElementById("checkoutTotal");
 
-  if (!checkoutModal || !checkoutItems || !checkoutTotal) return;
+  if (!checkoutModal) return;
 
-  checkoutItems.innerHTML = "";
-  let total = 0;
+  // Reset coupon state when re-opening cart
+  couponDiscount = 0;
+  const couponCode = document.getElementById("couponCode");
+  const couponMessage = document.getElementById("couponMessage");
+  const discountRow = document.querySelector(".discount-row");
+  if (couponCode) couponCode.value = "";
+  if (couponMessage) { couponMessage.textContent = ""; couponMessage.className = "coupon-message"; }
+  if (discountRow) discountRow.style.display = "none";
 
-  cart.forEach((item, index) => {
-    const priceNumber = parsePrice(item.price);
-    total += priceNumber;
+  // Product image map for known products
+  const productImages = {
+    "Canon EOS R5": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=80&q=80",
+    "Sony A7R IV": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=80&q=80",
+    "Nikon Z6 II": "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=80&q=80",
+    "Fujifilm X-T4": "https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?auto=format&fit=crop&w=80&q=80",
+    "Canon EOS 5D Mark IV": "https://images.unsplash.com/photo-1516724562728-afc824a36e84?auto=format&fit=crop&w=80&q=80",
+    "Sony A9 II": "https://images.unsplash.com/photo-1520390138845-fd2d229dd553?auto=format&fit=crop&w=80&q=80",
+  };
 
-    checkoutItems.innerHTML += `
-      <div class="checkout-item">
-        <div>
-          <h4>${item.name}</h4>
-          <p>${item.price}</p>
+  // Populate summary list
+  if (checkoutItems) {
+    checkoutItems.innerHTML = "";
+    let subtotal = 0;
+
+    cart.forEach((item, index) => {
+      const priceNumber = parsePrice(item.price);
+      subtotal += priceNumber;
+      const imgSrc = productImages[item.name] || "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=80&q=80";
+
+      checkoutItems.innerHTML += `
+        <div class="checkout-summary-item">
+          <img class="summary-item-img" src="${imgSrc}" alt="${item.name}" />
+          <div class="summary-item-info">
+            <h4>${item.name}</h4>
+            <span>Số lượng: 1 &nbsp;·&nbsp;
+              <button onclick="removeFromCart(${index})" style="background:none;border:none;color:#ff5252;cursor:pointer;font-size:0.75rem;font-weight:600;padding:0;">✕ Xóa</button>
+            </span>
+          </div>
+          <span class="summary-item-price">${item.price}</span>
         </div>
-        <button class="remove-item-btn" onclick="removeFromCart(${index})" title="Xóa sản phẩm">
-          <i class="fa-solid fa-trash"></i>
-        </button>
-      </div>
-    `;
-  });
+      `;
+    });
 
-  checkoutTotal.textContent = formatPrice(total);
-
-  // Update both total displays
-  const checkoutTotalRight = document.getElementById("checkoutTotalRight");
-  if (checkoutTotalRight) {
-    checkoutTotalRight.textContent = formatPrice(total);
+    // Update subtotal and total display
+    updateCheckoutPricing();
   }
 
   checkoutModal.classList.add("show");
+
+  // Load Vietnam provinces when modal opens
+  loadProvinces();
+
+  // Init payment method switching
+  initPaymentTabs();
+
+  // Init installment calculator
+  initInstallmentCalc();
+
+  // Init coupon engine
+  initCouponEngine();
+
+  // Init e-wallet selector
+  initEwalletSelector();
 }
 
 // =========================
-// REMOVE FROM CART
+// UPDATE CHECKOUT PRICING
+// =========================
+function updateCheckoutPricing() {
+  let subtotal = 0;
+  cart.forEach((item) => {
+    subtotal += parsePrice(item.price);
+  });
+
+  const discountAmount = Math.round(subtotal * (couponDiscount / 100));
+  const total = subtotal - discountAmount;
+
+  const subtotalEl = document.getElementById("checkoutSubtotal");
+  const totalEl = document.getElementById("checkoutTotal");
+  const discountEl = document.getElementById("checkoutDiscount");
+  const couponPercentEl = document.getElementById("couponPercent");
+  const discountRow = document.querySelector(".discount-row");
+
+  if (subtotalEl) subtotalEl.textContent = formatPrice(subtotal);
+  if (totalEl) totalEl.textContent = formatPrice(total);
+
+  if (couponDiscount > 0) {
+    if (discountEl) discountEl.textContent = "-" + formatPrice(discountAmount);
+    if (couponPercentEl) couponPercentEl.textContent = couponDiscount + "%";
+    if (discountRow) discountRow.style.display = "flex";
+  }
+
+  // Update installment calc if active
+  updateInstallmentDisplay(total);
+  // Update VietQR if visible
+  updateVietQR(total);
+
+  return total;
+}
+
+// =========================
+// VIETNAM ADDRESS API
+// =========================
+async function loadProvinces() {
+  const select = document.getElementById("checkoutProvince");
+  const districtSelect = document.getElementById("checkoutDistrict");
+  const wardSelect = document.getElementById("checkoutWard");
+  if (!select) return;
+
+  // Avoid reloading if already populated
+  if (select.options.length > 1) return;
+
+  select.innerHTML = '<option value="">Đang tải...</option>';
+
+  try {
+    const res = await fetch("https://provinces.open-api.vn/api/?depth=1");
+    if (!res.ok) throw new Error("API error");
+    const data = await res.json();
+
+    select.innerHTML = '<option value="">-- Chọn Tỉnh / Thành phố --</option>';
+    data.forEach((province) => {
+      const opt = document.createElement("option");
+      opt.value = province.code;
+      opt.textContent = province.name;
+      select.appendChild(opt);
+    });
+
+    // Province change → load districts
+    select.addEventListener("change", async function () {
+      const code = this.value;
+      districtSelect.innerHTML = '<option value="">-- Chọn Quận / Huyện --</option>';
+      wardSelect.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
+      districtSelect.disabled = true;
+      wardSelect.disabled = true;
+
+      if (!code) return;
+
+      districtSelect.innerHTML = '<option value="">Đang tải...</option>';
+      districtSelect.disabled = true;
+
+      try {
+        const r = await fetch(`https://provinces.open-api.vn/api/p/${code}?depth=2`);
+        if (!r.ok) throw new Error("API error");
+        const pData = await r.json();
+
+        districtSelect.innerHTML = '<option value="">-- Chọn Quận / Huyện --</option>';
+        pData.districts.forEach((d) => {
+          const o = document.createElement("option");
+          o.value = d.code;
+          o.textContent = d.name;
+          districtSelect.appendChild(o);
+        });
+        districtSelect.disabled = false;
+      } catch {
+        districtSelect.innerHTML = '<option value="">Lỗi tải dữ liệu - thử lại</option>';
+        districtSelect.disabled = false;
+      }
+
+      // District change → load wards
+      districtSelect.addEventListener("change", async function () {
+        const dCode = this.value;
+        wardSelect.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
+        wardSelect.disabled = true;
+
+        if (!dCode) return;
+
+        wardSelect.innerHTML = '<option value="">Đang tải...</option>';
+
+        try {
+          const r2 = await fetch(`https://provinces.open-api.vn/api/d/${dCode}?depth=2`);
+          if (!r2.ok) throw new Error("API error");
+          const dData = await r2.json();
+
+          wardSelect.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
+          dData.wards.forEach((w) => {
+            const o = document.createElement("option");
+            o.value = w.code;
+            o.textContent = w.name;
+            wardSelect.appendChild(o);
+          });
+          wardSelect.disabled = false;
+        } catch {
+          wardSelect.innerHTML = '<option value="">Lỗi tải dữ liệu - thử lại</option>';
+          wardSelect.disabled = false;
+        }
+      }, { once: true }); // once: true prevents duplicate listeners on re-open
+    }, { once: true });
+
+  } catch {
+    select.innerHTML = '<option value="">Lỗi tải tỉnh thành - F5 thử lại</option>';
+  }
+}
+
+// =========================
+// PAYMENT TAB SWITCHING
+// =========================
+function initPaymentTabs() {
+  const paymentInputs = document.querySelectorAll('input[name="payment"]');
+  paymentInputs.forEach((input) => {
+    // Remove stale listeners by replacing with clone
+    const clone = input.cloneNode(true);
+    input.parentNode.replaceChild(clone, input);
+  });
+
+  document.querySelectorAll('input[name="payment"]').forEach((input) => {
+    input.addEventListener("change", function () {
+      // Hide all dynamic areas
+      document.querySelectorAll(".dynamic-area").forEach((a) => a.classList.remove("active"));
+      // Show corresponding area
+      const area = document.getElementById("area-" + this.value);
+      if (area) {
+        area.classList.add("active");
+        // If VietQR selected, generate the QR
+        if (this.value === "bank-qr") {
+          updateVietQR(getCheckoutTotal());
+        }
+        // If installment selected, compute
+        if (this.value === "installment") {
+          updateInstallmentDisplay(getCheckoutTotal());
+        }
+      }
+    });
+  });
+}
+
+function getCheckoutTotal() {
+  let subtotal = 0;
+  cart.forEach((item) => { subtotal += parsePrice(item.price); });
+  const discountAmount = Math.round(subtotal * (couponDiscount / 100));
+  return subtotal - discountAmount;
+}
+
+// =========================
+// VIETQR DYNAMIC GENERATOR
+// =========================
+function updateVietQR(totalAmount) {
+  const qrImg = document.getElementById("vietQrImg");
+  const qrLoading = document.querySelector(".qr-loading");
+  const vietQrMsg = document.getElementById("vietQrMsg");
+  if (!qrImg) return;
+
+  // Generate a short unique order ID
+  const orderId = "KNG" + Date.now().toString().slice(-6);
+  if (vietQrMsg) vietQrMsg.textContent = orderId;
+
+  // Account info (MB Bank)
+  const bankId = "MB";
+  const accountNo = "190820268888";
+  const accountName = "KNG STORE";
+  const amount = totalAmount;
+  const addInfo = encodeURIComponent(orderId);
+
+  // VietQR API - free, no key needed
+  const qrUrl = `https://img.vietqr.io/image/${bankId}-${accountNo}-compact2.png?amount=${amount}&addInfo=${addInfo}&accountName=${encodeURIComponent(accountName)}`;
+
+  if (qrLoading) qrLoading.style.display = "flex";
+  qrImg.style.opacity = "0";
+
+  const tempImg = new Image();
+  tempImg.onload = () => {
+    qrImg.src = qrUrl;
+    qrImg.style.opacity = "1";
+    if (qrLoading) qrLoading.style.display = "none";
+  };
+  tempImg.onerror = () => {
+    if (qrLoading) qrLoading.textContent = "Không tạo được QR. Vui lòng chuyển khoản thủ công.";
+  };
+  tempImg.src = qrUrl;
+}
+
+// =========================
+// INSTALLMENT CALCULATOR
+// =========================
+function initInstallmentCalc() {
+  const termSelect = document.getElementById("installmentTerm");
+  const bankSelect = document.getElementById("installmentBank");
+  if (!termSelect) return;
+
+  const freshTerm = termSelect.cloneNode(true);
+  termSelect.parentNode.replaceChild(freshTerm, termSelect);
+
+  freshTerm.addEventListener("change", () => updateInstallmentDisplay(getCheckoutTotal()));
+  if (bankSelect) {
+    const freshBank = bankSelect.cloneNode(true);
+    bankSelect.parentNode.replaceChild(freshBank, bankSelect);
+    freshBank.addEventListener("change", () => updateInstallmentDisplay(getCheckoutTotal()));
+  }
+
+  updateInstallmentDisplay(getCheckoutTotal());
+}
+
+function updateInstallmentDisplay(total) {
+  const termSelect = document.getElementById("installmentTerm");
+  const instTotal = document.getElementById("instTotalValue");
+  const instFee = document.getElementById("instConversionFee");
+  const instMonthly = document.getElementById("instMonthlyPay");
+  if (!termSelect || !instMonthly) return;
+
+  const months = parseInt(termSelect.value) || 3;
+  const conversionFeeRate = 0.02; // 2% one-time fee
+  const fee = Math.round(total * conversionFeeRate);
+  const totalWithFee = total + fee;
+  const monthly = Math.round(totalWithFee / months);
+
+  if (instTotal) instTotal.textContent = formatPrice(total);
+  if (instFee) instFee.textContent = formatPrice(fee);
+  if (instMonthly) instMonthly.textContent = formatPrice(monthly) + " / tháng";
+}
+
+// =========================
+// COUPON ENGINE
+// =========================
+const VALID_COUPONS = {
+  "KNGSUMMER": 10,   // 10% off
+  "CAMERAPRO": 15,   // 15% off
+  "KNG5": 5,         // 5% off
+};
+
+function initCouponEngine() {
+  const btn = document.getElementById("applyCouponBtn");
+  if (!btn) return;
+
+  // Remove old listeners by cloning
+  const freshBtn = btn.cloneNode(true);
+  btn.parentNode.replaceChild(freshBtn, btn);
+
+  freshBtn.addEventListener("click", () => {
+    const input = document.getElementById("couponCode");
+    const msg = document.getElementById("couponMessage");
+    if (!input || !msg) return;
+
+    const code = input.value.trim().toUpperCase();
+    msg.className = "coupon-message";
+    msg.textContent = "";
+
+    if (!code) {
+      msg.className = "coupon-message error";
+      msg.textContent = "⚠️ Vui lòng nhập mã giảm giá.";
+      return;
+    }
+
+    if (VALID_COUPONS[code] !== undefined) {
+      couponDiscount = VALID_COUPONS[code];
+      msg.className = "coupon-message success";
+      msg.textContent = `✅ Áp dụng thành công! Bạn được giảm ${couponDiscount}% tổng đơn hàng.`;
+      updateCheckoutPricing();
+    } else {
+      couponDiscount = 0;
+      msg.className = "coupon-message error";
+      msg.textContent = `❌ Mã "${code}" không hợp lệ hoặc đã hết hạn.`;
+      updateCheckoutPricing();
+    }
+  });
+
+  // Allow Enter key to apply coupon
+  const input = document.getElementById("couponCode");
+  if (input) {
+    const freshInput = input.cloneNode(true);
+    input.parentNode.replaceChild(freshInput, input);
+    freshInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        document.getElementById("applyCouponBtn")?.click();
+      }
+    });
+  }
+}
+
+// =========================
+// E-WALLET SELECTOR
+// =========================
+function initEwalletSelector() {
+  document.querySelectorAll(".ewallet-logo-select").forEach((el) => {
+    el.addEventListener("click", function () {
+      document.querySelectorAll(".ewallet-logo-select").forEach((e) => e.classList.remove("active"));
+      this.classList.add("active");
+    });
+  });
+}
+
 // =========================
 function removeFromCart(index) {
   cart.splice(index, 1);
@@ -309,13 +657,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (navMenu) {
           navMenu.classList.remove("show-menu");
         }
-      }
-    });
-
-    // Add hover effect - expand underline on hover and keep it
-    anchor.addEventListener("mouseenter", function () {
-      if (this.closest(".nav-menu")) {
-        this.classList.add("active");
       }
     });
   });
@@ -480,32 +821,26 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // =========================
-  // PAYMENT METHODS - HOVER SELECT
-  // =========================
-  const paymentLabels = document.querySelectorAll(".payment-label");
-  paymentLabels.forEach((label) => {
-    label.addEventListener("mouseenter", function () {
-      const input = this.querySelector('input[type="radio"]');
-      if (input) {
-        input.checked = true;
-      }
-    });
-  });
-
   if (checkoutForm) {
     checkoutForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const name = document.getElementById("customerName").value.trim();
-      const phone = document.getElementById("customerPhone").value.trim();
-      const address = document.getElementById("customerAddress").value.trim();
-      const paymentElement = document.querySelector(
-        'input[name="payment"]:checked',
-      );
+      const name = document.getElementById("customerName")?.value.trim();
+      const phone = document.getElementById("customerPhone")?.value.trim();
+      const province = document.getElementById("checkoutProvince");
+      const district = document.getElementById("checkoutDistrict");
+      const ward = document.getElementById("checkoutWard");
+      const streetDetail = document.getElementById("customerAddressDetail")?.value.trim();
+      const paymentElement = document.querySelector('input[name="payment"]:checked');
 
-      if (!name || !phone || !address) {
-        showNotification("⚠️ Vui lòng nhập đầy đủ thông tin.");
+      // Validate required fields
+      if (!name || !phone) {
+        showNotification("⚠️ Vui lòng nhập đầy đủ họ tên và số điện thoại.");
+        return;
+      }
+
+      if (!province?.value || !district?.value || !ward?.value || !streetDetail) {
+        showNotification("⚠️ Vui lòng chọn đầy đủ địa chỉ giao hàng.");
         return;
       }
 
@@ -515,13 +850,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const paymentValue = paymentElement.value;
-
-      // Get total amount
-      let total = 0;
-      cart.forEach((item) => {
-        total += parsePrice(item.price);
-      });
-      const totalFormatted = formatPrice(total);
+      const totalFormatted = formatPrice(getCheckoutTotal());
 
       // Show success modal with payment details
       showSuccessModal(name, paymentValue, totalFormatted);
