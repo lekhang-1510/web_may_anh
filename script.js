@@ -245,6 +245,75 @@ function updateCheckoutPricing() {
 // =========================
 // VIETNAM ADDRESS API
 // =========================
+async function handleProvinceChange() {
+  const provinceSelect = document.getElementById("checkoutProvince");
+  const districtSelect = document.getElementById("checkoutDistrict");
+  const wardSelect = document.getElementById("checkoutWard");
+  if (!provinceSelect || !districtSelect || !wardSelect) return;
+
+  const code = provinceSelect.value;
+  districtSelect.innerHTML = '<option value="">-- Chọn Quận / Huyện --</option>';
+  wardSelect.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
+  districtSelect.disabled = true;
+  wardSelect.disabled = true;
+
+  if (!code) return;
+
+  districtSelect.innerHTML = '<option value="">Đang tải...</option>';
+
+  try {
+    const res = await fetch(`https://provinces.open-api.vn/api/p/${code}?depth=2`);
+    if (!res.ok) throw new Error("API error");
+    const pData = await res.json();
+
+    districtSelect.innerHTML = '<option value="">-- Chọn Quận / Huyện --</option>';
+    pData.districts.forEach((d) => {
+      const o = document.createElement("option");
+      o.value = d.code;
+      o.textContent = d.name;
+      districtSelect.appendChild(o);
+    });
+    districtSelect.disabled = false;
+  } catch (error) {
+    console.error("Error loading districts:", error);
+    districtSelect.innerHTML = '<option value="">Lỗi tải dữ liệu - thử lại</option>';
+    districtSelect.disabled = false;
+  }
+}
+
+async function handleDistrictChange() {
+  const districtSelect = document.getElementById("checkoutDistrict");
+  const wardSelect = document.getElementById("checkoutWard");
+  if (!districtSelect || !wardSelect) return;
+
+  const dCode = districtSelect.value;
+  wardSelect.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
+  wardSelect.disabled = true;
+
+  if (!dCode) return;
+
+  wardSelect.innerHTML = '<option value="">Đang tải...</option>';
+
+  try {
+    const res = await fetch(`https://provinces.open-api.vn/api/d/${dCode}?depth=2`);
+    if (!res.ok) throw new Error("API error");
+    const dData = await res.json();
+
+    wardSelect.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
+    dData.wards.forEach((w) => {
+      const o = document.createElement("option");
+      o.value = w.code;
+      o.textContent = w.name;
+      wardSelect.appendChild(o);
+    });
+    wardSelect.disabled = false;
+  } catch (error) {
+    console.error("Error loading wards:", error);
+    wardSelect.innerHTML = '<option value="">Lỗi tải dữ liệu - thử lại</option>';
+    wardSelect.disabled = false;
+  }
+}
+
 async function loadProvinces() {
   const select = document.getElementById("checkoutProvince");
   const districtSelect = document.getElementById("checkoutDistrict");
@@ -255,6 +324,12 @@ async function loadProvinces() {
   if (select.options.length > 1) return;
 
   select.innerHTML = '<option value="">Đang tải...</option>';
+
+  // Bind change events once here when we populate the provinces
+  select.addEventListener("change", handleProvinceChange);
+  if (districtSelect) {
+    districtSelect.addEventListener("change", handleDistrictChange);
+  }
 
   try {
     const res = await fetch("https://provinces.open-api.vn/api/?depth=1");
@@ -268,69 +343,8 @@ async function loadProvinces() {
       opt.textContent = province.name;
       select.appendChild(opt);
     });
-
-    // Province change → load districts
-    select.addEventListener("change", async function () {
-      const code = this.value;
-      districtSelect.innerHTML = '<option value="">-- Chọn Quận / Huyện --</option>';
-      wardSelect.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
-      districtSelect.disabled = true;
-      wardSelect.disabled = true;
-
-      if (!code) return;
-
-      districtSelect.innerHTML = '<option value="">Đang tải...</option>';
-      districtSelect.disabled = true;
-
-      try {
-        const r = await fetch(`https://provinces.open-api.vn/api/p/${code}?depth=2`);
-        if (!r.ok) throw new Error("API error");
-        const pData = await r.json();
-
-        districtSelect.innerHTML = '<option value="">-- Chọn Quận / Huyện --</option>';
-        pData.districts.forEach((d) => {
-          const o = document.createElement("option");
-          o.value = d.code;
-          o.textContent = d.name;
-          districtSelect.appendChild(o);
-        });
-        districtSelect.disabled = false;
-      } catch {
-        districtSelect.innerHTML = '<option value="">Lỗi tải dữ liệu - thử lại</option>';
-        districtSelect.disabled = false;
-      }
-
-      // District change → load wards
-      districtSelect.addEventListener("change", async function () {
-        const dCode = this.value;
-        wardSelect.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
-        wardSelect.disabled = true;
-
-        if (!dCode) return;
-
-        wardSelect.innerHTML = '<option value="">Đang tải...</option>';
-
-        try {
-          const r2 = await fetch(`https://provinces.open-api.vn/api/d/${dCode}?depth=2`);
-          if (!r2.ok) throw new Error("API error");
-          const dData = await r2.json();
-
-          wardSelect.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
-          dData.wards.forEach((w) => {
-            const o = document.createElement("option");
-            o.value = w.code;
-            o.textContent = w.name;
-            wardSelect.appendChild(o);
-          });
-          wardSelect.disabled = false;
-        } catch {
-          wardSelect.innerHTML = '<option value="">Lỗi tải dữ liệu - thử lại</option>';
-          wardSelect.disabled = false;
-        }
-      }, { once: true }); // once: true prevents duplicate listeners on re-open
-    }, { once: true });
-
-  } catch {
+  } catch (error) {
+    console.error("Error loading provinces:", error);
     select.innerHTML = '<option value="">Lỗi tải tỉnh thành - F5 thử lại</option>';
   }
 }
@@ -537,10 +551,40 @@ function removeFromCart(index) {
   }
 }
 
+// Timers for success auto-redirect
+let successCountdownTimeout;
+let successCountdownInterval;
+
+function clearSuccessTimers() {
+  if (successCountdownTimeout) {
+    clearTimeout(successCountdownTimeout);
+    successCountdownTimeout = null;
+  }
+  if (successCountdownInterval) {
+    clearInterval(successCountdownInterval);
+    successCountdownInterval = null;
+  }
+  
+  // Make progress bar freeze and fade out the countdown text
+  const countdownEl = document.querySelector(".success-countdown");
+  if (countdownEl) {
+    countdownEl.style.opacity = "0";
+    countdownEl.style.transition = "opacity 0.3s ease";
+  }
+  
+  const bar = document.getElementById("countdownBar");
+  if (bar) {
+    const computedStyle = window.getComputedStyle(bar);
+    const width = computedStyle.getPropertyValue("width");
+    bar.style.animation = "none";
+    bar.style.width = width;
+  }
+}
+
 // =========================
 // SHOW SUCCESS MODAL
 // =========================
-function showSuccessModal(customerName, paymentMethod, total) {
+function showSuccessModal(customerName, paymentMethod, total, customerEmail) {
   const successModal = document.getElementById("successModal");
   const successTitle = document.getElementById("successTitle");
   const successMessage = document.getElementById("successMessage");
@@ -559,6 +603,27 @@ function showSuccessModal(customerName, paymentMethod, total) {
 
   successTitle.textContent = "🎉 Thanh toán thành công!";
   successMessage.textContent = "Cảm ơn bạn đã mua sắm tại KNG Store";
+
+  // Generate order ID
+  const orderId = "KNG-" + Math.floor(100000 + Math.random() * 900000);
+  
+  // Set order ID in the HTML if the element exists
+  const orderIdEl = document.getElementById("successOrderId");
+  if (orderIdEl) {
+    orderIdEl.textContent = "#" + orderId;
+  }
+
+  // Set email note in the HTML
+  const emailNote = document.getElementById("successEmailNote");
+  if (emailNote) {
+    if (customerEmail) {
+      emailNote.innerHTML = `Hệ thống đã gửi email xác nhận kèm hóa đơn đến <strong>${customerEmail}</strong>.`;
+      emailNote.style.display = "block";
+    } else {
+      emailNote.innerHTML = `Hệ thống đã ghi nhận đơn hàng của bạn. Xin cảm ơn!`;
+      emailNote.style.display = "block";
+    }
+  }
 
   successDetails.innerHTML = `
     <div class="success-detail-item">
@@ -579,18 +644,55 @@ function showSuccessModal(customerName, paymentMethod, total) {
     </div>
   `;
 
+  // Reset success countdown elements to initial states
+  const countdownEl = document.querySelector(".success-countdown");
+  if (countdownEl) {
+    countdownEl.style.opacity = "1";
+    countdownEl.style.transition = "none";
+  }
+  const countdownSec = document.getElementById("countdownSec");
+  if (countdownSec) {
+    countdownSec.textContent = "5";
+  }
+  const bar = document.getElementById("countdownBar");
+  if (bar) {
+    bar.style.animation = "none";
+    bar.style.width = "auto";
+  }
+
   successModal.classList.add("show");
 
-  // Auto close after 5 seconds
-  setTimeout(() => {
+  // Clear any active timers first
+  clearSuccessTimers();
+
+  // Set countdown timer for 5 seconds
+  let timeLeft = 5;
+  successCountdownInterval = setInterval(() => {
+    timeLeft--;
+    if (countdownSec) {
+      countdownSec.textContent = timeLeft;
+    }
+    if (timeLeft <= 0) {
+      clearInterval(successCountdownInterval);
+      successCountdownInterval = null;
+    }
+  }, 1000);
+
+  successCountdownTimeout = setTimeout(() => {
     closeSuccessModal();
   }, 5000);
+}
+
+function viewOrderDetails() {
+  clearSuccessTimers();
+  showNotification("🔍 Tính năng Xem chi tiết đơn hàng đang được phát triển!");
 }
 
 // =========================
 // CLOSE SUCCESS MODAL
 // =========================
 function closeSuccessModal() {
+  clearSuccessTimers();
   const successModal = document.getElementById("successModal");
   if (successModal) {
     successModal.classList.remove("show");
@@ -600,7 +702,25 @@ function closeSuccessModal() {
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCartCount();
   document.getElementById("checkoutModal").classList.remove("show");
-  document.getElementById("checkoutForm").reset();
+  
+  const form = document.getElementById("checkoutForm");
+  if (form) {
+    form.reset();
+    form.style.display = "block";
+  }
+  
+  // Reset address selectors
+  const districtSelect = document.getElementById("checkoutDistrict");
+  const wardSelect = document.getElementById("checkoutWard");
+  if (districtSelect) {
+    districtSelect.innerHTML = '<option value="">-- Chọn Quận / Huyện --</option>';
+    districtSelect.disabled = true;
+  }
+  if (wardSelect) {
+    wardSelect.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
+    wardSelect.disabled = true;
+  }
+
   document.getElementById("checkoutItems").innerHTML = "";
   document.getElementById("checkoutTotal").textContent = "0đ";
   document.getElementById("checkoutTotalRight").textContent = "0đ";
@@ -853,7 +973,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const totalFormatted = formatPrice(getCheckoutTotal());
 
       // Show success modal with payment details
-      showSuccessModal(name, paymentValue, totalFormatted);
+      const email = document.getElementById("customerEmail")?.value.trim() || "";
+      showSuccessModal(name, paymentValue, totalFormatted, email);
 
       // Hide checkout form
       checkoutForm.style.display = "none";

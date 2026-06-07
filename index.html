@@ -136,13 +136,32 @@
         <i class="fa-solid fa-check-circle"></i>
       </div>
       <h2 id="successTitle">Thanh toán thành công!</h2>
+      
+      <div class="success-order-code">
+        Mã đơn hàng: <strong id="successOrderId">#KNG-XXXXXX</strong>
+      </div>
+
       <p id="successMessage" class="success-message">
         Đơn hàng của bạn đã được xác nhận
       </p>
+      
       <div id="successDetails" class="success-details"></div>
-      <button class="success-btn" onclick="closeSuccessModal()">
-        Quay lại trang chủ
-      </button>
+      
+      <p class="success-email-note" id="successEmailNote">
+        Hệ thống đã gửi email xác nhận kèm hóa đơn đến <strong id="successCustomerEmail"></strong>
+      </p>
+
+      <div class="success-actions">
+        <button class="btn-secondary" onclick="viewOrderDetails()">Xem chi tiết</button>
+        <button class="btn-primary" onclick="closeSuccessModal()">Tiếp tục mua sắm</button>
+      </div>
+
+      <div class="success-countdown">
+        <span>Tự động quay về trang chủ sau <strong id="countdownSec">5</strong>s...</span>
+        <div class="countdown-bar-container">
+          <div class="countdown-bar" id="countdownBar"></div>
+        </div>
+      </div>
     </div>
   </div>
 
