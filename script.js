@@ -148,17 +148,26 @@ function showCartItems() {
   const couponMessage = document.getElementById("couponMessage");
   const discountRow = document.querySelector(".discount-row");
   if (couponCode) couponCode.value = "";
-  if (couponMessage) { couponMessage.textContent = ""; couponMessage.className = "coupon-message"; }
+  if (couponMessage) {
+    couponMessage.textContent = "";
+    couponMessage.className = "coupon-message";
+  }
   if (discountRow) discountRow.style.display = "none";
 
   // Product image map for known products
   const productImages = {
-    "Canon EOS R5": "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=80&q=80",
-    "Sony A7R IV": "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=80&q=80",
-    "Nikon Z6 II": "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=80&q=80",
-    "Fujifilm X-T4": "https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?auto=format&fit=crop&w=80&q=80",
-    "Canon EOS 5D Mark IV": "https://images.unsplash.com/photo-1516724562728-afc824a36e84?auto=format&fit=crop&w=80&q=80",
-    "Sony A9 II": "https://images.unsplash.com/photo-1520390138845-fd2d229dd553?auto=format&fit=crop&w=80&q=80",
+    "Canon EOS R5":
+      "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=80&q=80",
+    "Sony A7R IV":
+      "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=80&q=80",
+    "Nikon Z6 II":
+      "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=80&q=80",
+    "Fujifilm X-T4":
+      "https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?auto=format&fit=crop&w=80&q=80",
+    "Canon EOS 5D Mark IV":
+      "https://images.unsplash.com/photo-1516724562728-afc824a36e84?auto=format&fit=crop&w=80&q=80",
+    "Sony A9 II":
+      "https://images.unsplash.com/photo-1520390138845-fd2d229dd553?auto=format&fit=crop&w=80&q=80",
   };
 
   // Populate summary list
@@ -169,7 +178,9 @@ function showCartItems() {
     cart.forEach((item, index) => {
       const priceNumber = parsePrice(item.price);
       subtotal += priceNumber;
-      const imgSrc = productImages[item.name] || "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=80&q=80";
+      const imgSrc =
+        productImages[item.name] ||
+        "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=80&q=80";
 
       checkoutItems.innerHTML += `
         <div class="checkout-summary-item">
@@ -252,7 +263,8 @@ async function handleProvinceChange() {
   if (!provinceSelect || !districtSelect || !wardSelect) return;
 
   const code = provinceSelect.value;
-  districtSelect.innerHTML = '<option value="">-- Chọn Quận / Huyện --</option>';
+  districtSelect.innerHTML =
+    '<option value="">-- Chọn Quận / Huyện --</option>';
   wardSelect.innerHTML = '<option value="">-- Chọn Phường / Xã --</option>';
   districtSelect.disabled = true;
   wardSelect.disabled = true;
@@ -262,11 +274,14 @@ async function handleProvinceChange() {
   districtSelect.innerHTML = '<option value="">Đang tải...</option>';
 
   try {
-    const res = await fetch(`https://provinces.open-api.vn/api/p/${code}?depth=2`);
+    const res = await fetch(
+      `https://provinces.open-api.vn/api/p/${code}?depth=2`,
+    );
     if (!res.ok) throw new Error("API error");
     const pData = await res.json();
 
-    districtSelect.innerHTML = '<option value="">-- Chọn Quận / Huyện --</option>';
+    districtSelect.innerHTML =
+      '<option value="">-- Chọn Quận / Huyện --</option>';
     pData.districts.forEach((d) => {
       const o = document.createElement("option");
       o.value = d.code;
@@ -276,7 +291,8 @@ async function handleProvinceChange() {
     districtSelect.disabled = false;
   } catch (error) {
     console.error("Error loading districts:", error);
-    districtSelect.innerHTML = '<option value="">Lỗi tải dữ liệu - thử lại</option>';
+    districtSelect.innerHTML =
+      '<option value="">Lỗi tải dữ liệu - thử lại</option>';
     districtSelect.disabled = false;
   }
 }
@@ -295,7 +311,9 @@ async function handleDistrictChange() {
   wardSelect.innerHTML = '<option value="">Đang tải...</option>';
 
   try {
-    const res = await fetch(`https://provinces.open-api.vn/api/d/${dCode}?depth=2`);
+    const res = await fetch(
+      `https://provinces.open-api.vn/api/d/${dCode}?depth=2`,
+    );
     if (!res.ok) throw new Error("API error");
     const dData = await res.json();
 
@@ -309,7 +327,8 @@ async function handleDistrictChange() {
     wardSelect.disabled = false;
   } catch (error) {
     console.error("Error loading wards:", error);
-    wardSelect.innerHTML = '<option value="">Lỗi tải dữ liệu - thử lại</option>';
+    wardSelect.innerHTML =
+      '<option value="">Lỗi tải dữ liệu - thử lại</option>';
     wardSelect.disabled = false;
   }
 }
@@ -345,7 +364,8 @@ async function loadProvinces() {
     });
   } catch (error) {
     console.error("Error loading provinces:", error);
-    select.innerHTML = '<option value="">Lỗi tải tỉnh thành - F5 thử lại</option>';
+    select.innerHTML =
+      '<option value="">Lỗi tải tỉnh thành - F5 thử lại</option>';
   }
 }
 
@@ -363,7 +383,9 @@ function initPaymentTabs() {
   document.querySelectorAll('input[name="payment"]').forEach((input) => {
     input.addEventListener("change", function () {
       // Hide all dynamic areas
-      document.querySelectorAll(".dynamic-area").forEach((a) => a.classList.remove("active"));
+      document
+        .querySelectorAll(".dynamic-area")
+        .forEach((a) => a.classList.remove("active"));
       // Show corresponding area
       const area = document.getElementById("area-" + this.value);
       if (area) {
@@ -383,7 +405,9 @@ function initPaymentTabs() {
 
 function getCheckoutTotal() {
   let subtotal = 0;
-  cart.forEach((item) => { subtotal += parsePrice(item.price); });
+  cart.forEach((item) => {
+    subtotal += parsePrice(item.price);
+  });
   const discountAmount = Math.round(subtotal * (couponDiscount / 100));
   return subtotal - discountAmount;
 }
@@ -421,7 +445,9 @@ function updateVietQR(totalAmount) {
     if (qrLoading) qrLoading.style.display = "none";
   };
   tempImg.onerror = () => {
-    if (qrLoading) qrLoading.textContent = "Không tạo được QR. Vui lòng chuyển khoản thủ công.";
+    if (qrLoading)
+      qrLoading.textContent =
+        "Không tạo được QR. Vui lòng chuyển khoản thủ công.";
   };
   tempImg.src = qrUrl;
 }
@@ -437,11 +463,15 @@ function initInstallmentCalc() {
   const freshTerm = termSelect.cloneNode(true);
   termSelect.parentNode.replaceChild(freshTerm, termSelect);
 
-  freshTerm.addEventListener("change", () => updateInstallmentDisplay(getCheckoutTotal()));
+  freshTerm.addEventListener("change", () =>
+    updateInstallmentDisplay(getCheckoutTotal()),
+  );
   if (bankSelect) {
     const freshBank = bankSelect.cloneNode(true);
     bankSelect.parentNode.replaceChild(freshBank, bankSelect);
-    freshBank.addEventListener("change", () => updateInstallmentDisplay(getCheckoutTotal()));
+    freshBank.addEventListener("change", () =>
+      updateInstallmentDisplay(getCheckoutTotal()),
+    );
   }
 
   updateInstallmentDisplay(getCheckoutTotal());
@@ -469,9 +499,9 @@ function updateInstallmentDisplay(total) {
 // COUPON ENGINE
 // =========================
 const VALID_COUPONS = {
-  "KNGSUMMER": 10,   // 10% off
-  "CAMERAPRO": 15,   // 15% off
-  "KNG5": 5,         // 5% off
+  KNGSUMMER: 10, // 10% off
+  CAMERAPRO: 15, // 15% off
+  KNG5: 5, // 5% off
 };
 
 function initCouponEngine() {
@@ -530,7 +560,9 @@ function initCouponEngine() {
 function initEwalletSelector() {
   document.querySelectorAll(".ewallet-logo-select").forEach((el) => {
     el.addEventListener("click", function () {
-      document.querySelectorAll(".ewallet-logo-select").forEach((e) => e.classList.remove("active"));
+      document
+        .querySelectorAll(".ewallet-logo-select")
+        .forEach((e) => e.classList.remove("active"));
       this.classList.add("active");
     });
   });
@@ -564,14 +596,14 @@ function clearSuccessTimers() {
     clearInterval(successCountdownInterval);
     successCountdownInterval = null;
   }
-  
+
   // Make progress bar freeze and fade out the countdown text
   const countdownEl = document.querySelector(".success-countdown");
   if (countdownEl) {
     countdownEl.style.opacity = "0";
     countdownEl.style.transition = "opacity 0.3s ease";
   }
-  
+
   const bar = document.getElementById("countdownBar");
   if (bar) {
     const computedStyle = window.getComputedStyle(bar);
@@ -606,7 +638,7 @@ function showSuccessModal(customerName, paymentMethod, total, customerEmail) {
 
   // Generate order ID
   const orderId = "KNG-" + Math.floor(100000 + Math.random() * 900000);
-  
+
   // Set order ID in the HTML if the element exists
   const orderIdEl = document.getElementById("successOrderId");
   if (orderIdEl) {
@@ -702,18 +734,19 @@ function closeSuccessModal() {
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCartCount();
   document.getElementById("checkoutModal").classList.remove("show");
-  
+
   const form = document.getElementById("checkoutForm");
   if (form) {
     form.reset();
     form.style.display = "block";
   }
-  
+
   // Reset address selectors
   const districtSelect = document.getElementById("checkoutDistrict");
   const wardSelect = document.getElementById("checkoutWard");
   if (districtSelect) {
-    districtSelect.innerHTML = '<option value="">-- Chọn Quận / Huyện --</option>';
+    districtSelect.innerHTML =
+      '<option value="">-- Chọn Quận / Huyện --</option>';
     districtSelect.disabled = true;
   }
   if (wardSelect) {
@@ -950,8 +983,12 @@ document.addEventListener("DOMContentLoaded", function () {
       const province = document.getElementById("checkoutProvince");
       const district = document.getElementById("checkoutDistrict");
       const ward = document.getElementById("checkoutWard");
-      const streetDetail = document.getElementById("customerAddressDetail")?.value.trim();
-      const paymentElement = document.querySelector('input[name="payment"]:checked');
+      const streetDetail = document
+        .getElementById("customerAddressDetail")
+        ?.value.trim();
+      const paymentElement = document.querySelector(
+        'input[name="payment"]:checked',
+      );
 
       // Validate required fields
       if (!name || !phone) {
@@ -959,7 +996,12 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      if (!province?.value || !district?.value || !ward?.value || !streetDetail) {
+      if (
+        !province?.value ||
+        !district?.value ||
+        !ward?.value ||
+        !streetDetail
+      ) {
         showNotification("⚠️ Vui lòng chọn đầy đủ địa chỉ giao hàng.");
         return;
       }
@@ -972,8 +1014,17 @@ document.addEventListener("DOMContentLoaded", function () {
       const paymentValue = paymentElement.value;
       const totalFormatted = formatPrice(getCheckoutTotal());
 
+      // === LƯU LỊCH SỬ MUA HÀNG ===
+      // Lấy danh sách tên sản phẩm từ giỏ hàng
+      const productNames = cart.map((item) => item.name);
+      // Lấy tổng tiền (số, không phải string)
+      const totalAmount = getCheckoutTotal();
+      // Gọi hàm lưu lịch sử
+      luuDonHangVaoLichSu(productNames, totalAmount);
+
       // Show success modal with payment details
-      const email = document.getElementById("customerEmail")?.value.trim() || "";
+      const email =
+        document.getElementById("customerEmail")?.value.trim() || "";
       showSuccessModal(name, paymentValue, totalFormatted, email);
 
       // Hide checkout form
@@ -1061,3 +1112,155 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
+
+/* =========================
+   LỊCH SỬ MUA HÀNG - HISTORY MANAGEMENT
+========================= */
+
+// LocalStorage key cho lịch sử mua hàng
+const HISTORY_KEY = "kng_store_purchase_history";
+
+/**
+ * Hàm lưu đơn hàng vào lịch sử (gọi khi thanh toán thành công)
+ * @param {Array} products - Mảng các sản phẩm đã mua (VD: ["Canon EOS R5", "Sony A7R IV"])
+ * @param {Number} totalAmount - Tổng tiền thanh toán (VD: 270000000)
+ */
+function luuDonHangVaoLichSu(products, totalAmount) {
+  // Lấy lịch sử hiện tại từ LocalStorage
+  let history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+
+  // Tạo mã đơn hàng ngẫu nhiên: KNG-XXXXXX (6 ký tự số)
+  const randomCode = Math.floor(100000 + Math.random() * 900000);
+  const orderId = `KNG-${randomCode}`;
+
+  // Tạo object đơn hàng mới
+  const newOrder = {
+    id: orderId,
+    timestamp: new Date().toISOString(), // Lưu thời gian dạng ISO string
+    products: Array.isArray(products) ? products : [products], // Đảm bảo là mảng
+    total: totalAmount,
+  };
+
+  // Thêm đơn hàng mới vào đầu mảng (đơn mới nhất sẽ ở trên)
+  history.unshift(newOrder);
+
+  // Lưu lại vào LocalStorage
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+
+  console.log("✅ Đơn hàng đã được lưu:", newOrder);
+}
+
+/**
+ * Hàm hiển thị lịch sử mua hàng
+ */
+function hienThiLichSuMuaHang() {
+  const historyModal = document.getElementById("historyModal");
+  const historyOrdersList = document.getElementById("historyOrdersList");
+
+  if (!historyModal || !historyOrdersList) {
+    console.error("❌ Không tìm thấy phần tử Modal lịch sử.");
+    return;
+  }
+
+  // Lấy dữ liệu lịch sử từ LocalStorage
+  const history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+
+  // Xóa nội dung cũ
+  historyOrdersList.innerHTML = "";
+
+  // Nếu không có đơn hàng nào
+  if (history.length === 0) {
+    historyOrdersList.innerHTML = `
+      <div class="history-empty">
+        <i class="fa-solid fa-inbox"></i>
+        <p>Bạn chưa có đơn hàng nào tại KNG Store</p>
+      </div>
+    `;
+  } else {
+    // Render từng đơn hàng thành Card
+    history.forEach((order) => {
+      const orderDate = new Date(order.timestamp);
+      const formattedDate = orderDate.toLocaleDateString("vi-VN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      // Tạo HTML cho danh sách sản phẩm
+      const productsHTML = order.products
+        .map(
+          (product) => `<div class="order-card-product-name">${product}</div>`,
+        )
+        .join("");
+
+      // Định dạng tiền tệ
+      const formattedTotal = order.total.toLocaleString("vi-VN") + "đ";
+
+      // Tạo Card đơn hàng
+      const orderCard = `
+        <div class="history-order-card">
+          <div class="order-card-header">
+            <div class="order-card-id">
+              <i class="fa-solid fa-tag"></i>
+              ${order.id}
+            </div>
+            <div class="order-card-date">${formattedDate}</div>
+          </div>
+          <div class="order-card-body">
+            <div class="order-card-products">
+              ${productsHTML}
+            </div>
+          </div>
+          <div class="order-card-footer">
+            <div class="order-card-total">
+              <span class="order-card-total-label">Tổng thanh toán:</span>
+              <span class="order-card-total-amount">${formattedTotal}</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      historyOrdersList.innerHTML += orderCard;
+    });
+  }
+
+  // Hiển thị Modal
+  historyModal.classList.add("show");
+
+  // Đóng modal khi click bên ngoài Modal Content
+  historyModal.addEventListener("click", (e) => {
+    if (e.target === historyModal) {
+      dongLichSuMuaHang();
+    }
+  });
+}
+
+/**
+ * Hàm đóng Modal lịch sử
+ */
+function dongLichSuMuaHang() {
+  const historyModal = document.getElementById("historyModal");
+  if (historyModal) {
+    historyModal.classList.remove("show");
+  }
+}
+
+/**
+ * Hàm xóa tất cả lịch sử mua hàng
+ */
+function xoaTatCaLichSu() {
+  // Hiển thị xác nhận trước khi xóa
+  const isConfirmed = confirm(
+    "⚠️ Bạn chắc chắn muốn xóa tất cả lịch sử mua hàng? Hành động này không thể hoàn tác.",
+  );
+
+  if (isConfirmed) {
+    localStorage.removeItem(HISTORY_KEY);
+    showNotification("🗑️ Lịch sử mua hàng đã được xóa hoàn toàn.");
+
+    // Render lại danh sách để hiển thị trạng thái trống
+    hienThiLichSuMuaHang();
+  }
+}
