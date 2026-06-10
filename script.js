@@ -1264,3 +1264,367 @@ function xoaTatCaLichSu() {
     hienThiLichSuMuaHang();
   }
 }
+
+// =========================
+// AUTH MODULE
+// =========================
+(function () {
+  const AUTH_USERS_KEY = "kng_registered_users";
+  const AUTH_TOKEN_KEY = "kng_auth_token";
+  const AUTH_USER_KEY = "kng_auth_user";
+
+  // --- API simulation (swap with real fetch calls later) ---
+
+  /**
+   * POST /api/register
+   * @param {{ name: string, email: string, phone: string, password: string }} data
+   * @returns {Promise<{ success: boolean, message: string }>}
+   */
+  function apiRegister(data) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const users = JSON.parse(localStorage.getItem(AUTH_USERS_KEY) || "[]");
+        if (users.find((u) => u.email === data.email)) {
+          reject({ success: false, message: "Email đã được đăng ký." });
+          return;
+        }
+        users.push({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          password: data.password,
+          avatar: "",
+          createdAt: new Date().toISOString(),
+        });
+        localStorage.setItem(AUTH_USERS_KEY, JSON.stringify(users));
+        resolve({ success: true, message: "Đăng ký thành công!" });
+      }, 600);
+    });
+  }
+
+  /**
+   * POST /api/login
+   * @param {{ email: string, password: string }} data
+   * @returns {Promise<{ success: boolean, token: string, user: object }>}
+   */
+  function apiLogin(data) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const users = JSON.parse(localStorage.getItem(AUTH_USERS_KEY) || "[]");
+        const user = users.find(
+          (u) => u.email === data.email && u.password === data.password,
+        );
+        if (!user) {
+          reject({ success: false, message: "Email hoặc mật khẩu không đúng." });
+          return;
+        }
+        const token = "kng_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+        resolve({
+          success: true,
+          token: token,
+          user: { name: user.name, email: user.email, phone: user.phone, avatar: user.avatar },
+        });
+      }, 600);
+    });
+  }
+
+  /**
+   * POST /api/forgot-password
+   * @param {{ email: string }} data
+   * @returns {Promise<{ success: boolean, message: string }>}
+   */
+  function apiForgotPassword(data) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const users = JSON.parse(localStorage.getItem(AUTH_USERS_KEY) || "[]");
+        if (!users.find((u) => u.email === data.email)) {
+          reject({ success: false, message: "Email chưa được đăng ký trong hệ thống." });
+          return;
+        }
+        resolve({
+          success: true,
+          message: "Liên kết khôi phục mật khẩu đã được gửi tới email của bạn.",
+        });
+      }, 800);
+    });
+  }
+
+  // --- DOM refs ---
+  const authModal = document.getElementById("authModal");
+  const authClose = document.getElementById("authClose");
+  const accountBtn = document.getElementById("accountBtn");
+  const userProfileWrapper = document.getElementById("userProfileWrapper");
+  const userAvatar = document.getElementById("userAvatar");
+  const userDropdown = document.getElementById("userDropdown");
+  const dropdownAvatar = document.getElementById("dropdownAvatar");
+  const dropdownName = document.getElementById("dropdownName");
+  const dropdownEmail = document.getElementById("dropdownEmail");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+  const loginForm = document.getElementById("loginForm");
+  const registerForm = document.getElementById("registerForm");
+  const forgotForm = document.getElementById("forgotForm");
+  const authTabs = document.querySelectorAll(".auth-tab");
+
+  // --- Helpers ---
+  function getAvatarUrl(name) {
+    const encoded = encodeURIComponent(name || "User");
+    return "https://ui-avatars.com/api/?name=" + encoded + "&background=0a0e27&color=00d4ff&size=80&bold=true";
+  }
+
+  function saveSession(token, user, remember) {
+    const storage = remember ? localStorage : sessionStorage;
+    storage.setItem(AUTH_TOKEN_KEY, token);
+    storage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+    if (remember) {
+      localStorage.setItem("kng_remember", "1");
+    }
+  }
+
+  function loadSession() {
+    if (localStorage.getItem("kng_remember") === "1") {
+      const token = localStorage.getItem(AUTH_TOKEN_KEY);
+      const user = localStorage.getItem(AUTH_USER_KEY);
+      if (token && user) return { token, user: JSON.parse(user) };
+    }
+    const token = sessionStorage.getItem(AUTH_TOKEN_KEY);
+    const user = sessionStorage.getItem(AUTH_USER_KEY);
+    if (token && user) return { token, user: JSON.parse(user) };
+    return null;
+  }
+
+  function clearSession() {
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    localStorage.removeItem(AUTH_USER_KEY);
+    localStorage.removeItem("kng_remember");
+    sessionStorage.removeItem(AUTH_TOKEN_KEY);
+    sessionStorage.removeItem(AUTH_USER_KEY);
+  }
+
+  // --- UI state ---
+  function updateNavbarState() {
+    const session = loadSession();
+    if (session) {
+      accountBtn.style.display = "none";
+      userProfileWrapper.style.display = "inline-block";
+      const avatarSrc = session.user.avatar || getAvatarUrl(session.user.name);
+      userAvatar.src = avatarSrc;
+      dropdownAvatar.src = avatarSrc;
+      dropdownName.textContent = session.user.name;
+      dropdownEmail.textContent = session.user.email;
+    } else {
+      accountBtn.style.display = "flex";
+      userProfileWrapper.style.display = "none";
+      userDropdown.classList.remove("show");
+    }
+  }
+
+  function openAuthModal(tab) {
+    authModal.classList.add("show");
+    switchTab(tab || "login");
+  }
+
+  function closeAuthModal() {
+    authModal.classList.remove("show");
+  }
+
+  function switchTab(tabName) {
+    authTabs.forEach((t) => t.classList.toggle("active", t.dataset.tab === tabName));
+    loginForm.style.display = tabName === "login" ? "block" : "none";
+    registerForm.style.display = tabName === "register" ? "block" : "none";
+    forgotForm.style.display = tabName === "forgot" ? "block" : "none";
+  }
+
+  // --- Event listeners ---
+
+  // Open modal
+  if (accountBtn) {
+    accountBtn.addEventListener("click", () => openAuthModal("login"));
+  }
+
+  // Close modal
+  if (authClose) {
+    authClose.addEventListener("click", closeAuthModal);
+  }
+  if (authModal) {
+    authModal.addEventListener("click", (e) => {
+      if (e.target === authModal) closeAuthModal();
+    });
+  }
+
+  // Tab switching
+  authTabs.forEach((tab) => {
+    tab.addEventListener("click", () => switchTab(tab.dataset.tab));
+  });
+
+  // data-switch links
+  document.querySelectorAll("[data-switch]").forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      switchTab(link.dataset.switch);
+    });
+  });
+
+  // Toggle password visibility
+  document.querySelectorAll(".toggle-password").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const input = document.getElementById(btn.dataset.target);
+      if (!input) return;
+      const isHidden = input.type === "password";
+      input.type = isHidden ? "text" : "password";
+      btn.querySelector("i").classList.toggle("fa-eye", !isHidden);
+      btn.querySelector("i").classList.toggle("fa-eye-slash", isHidden);
+    });
+  });
+
+  // Avatar dropdown toggle
+  if (userProfileWrapper) {
+    userProfileWrapper.addEventListener("click", (e) => {
+      e.stopPropagation();
+      userDropdown.classList.toggle("show");
+    });
+  }
+
+  // Close dropdown on outside click
+  document.addEventListener("click", (e) => {
+    if (userDropdown && !userProfileWrapper.contains(e.target)) {
+      userDropdown.classList.remove("show");
+    }
+  });
+
+  // Logout
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      clearSession();
+      updateNavbarState();
+      showNotification("Đăng xuất thành công!");
+    });
+  }
+
+  // --- Form submissions ---
+
+  // LOGIN
+  if (loginForm) {
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+      const remember = document.getElementById("rememberMe").checked;
+
+      if (!email || !password) {
+        showNotification("⚠️ Vui lòng nhập đầy đủ email và mật khẩu.");
+        return;
+      }
+
+      const btn = loginForm.querySelector(".auth-submit-btn");
+      btn.disabled = true;
+      btn.querySelector("span").textContent = "Đang xử lý...";
+
+      apiLogin({ email, password })
+        .then((res) => {
+          saveSession(res.token, res.user, remember);
+          closeAuthModal();
+          updateNavbarState();
+          loginForm.reset();
+          showNotification("Đăng nhập thành công! Chào " + res.user.name);
+        })
+        .catch((err) => {
+          showNotification("❌ " + (err.message || "Đăng nhập thất bại."));
+        })
+        .finally(() => {
+          btn.disabled = false;
+          btn.querySelector("span").textContent = "Đăng nhập";
+        });
+    });
+  }
+
+  // REGISTER
+  if (registerForm) {
+    registerForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("regName").value.trim();
+      const email = document.getElementById("regEmail").value.trim();
+      const phone = document.getElementById("regPhone").value.trim();
+      const password = document.getElementById("regPassword").value;
+      const confirmPassword = document.getElementById("regConfirmPassword").value;
+      const agreeTerms = document.getElementById("agreeTerms").checked;
+
+      if (!name || !email || !password || !confirmPassword) {
+        showNotification("⚠️ Vui lòng nhập đầy đủ thông tin.");
+        return;
+      }
+      if (password.length < 6) {
+        showNotification("⚠️ Mật khẩu phải có ít nhất 6 ký tự.");
+        return;
+      }
+      if (password !== confirmPassword) {
+        showNotification("⚠️ Mật khẩu nhập lại không khớp.");
+        return;
+      }
+      if (!agreeTerms) {
+        showNotification("⚠️ Bạn cần đồng ý với điều khoản dịch vụ.");
+        return;
+      }
+
+      const btn = registerForm.querySelector(".auth-submit-btn");
+      btn.disabled = true;
+      btn.querySelector("span").textContent = "Đang xử lý...";
+
+      apiRegister({ name, email, phone, password })
+        .then((res) => {
+          showNotification(res.message + " Hãy đăng nhập.");
+          registerForm.reset();
+          switchTab("login");
+          document.getElementById("loginEmail").value = email;
+        })
+        .catch((err) => {
+          showNotification("❌ " + (err.message || "Đăng ký thất bại."));
+        })
+        .finally(() => {
+          btn.disabled = false;
+          btn.querySelector("span").textContent = "Đăng ký";
+        });
+    });
+  }
+
+  // FORGOT PASSWORD
+  if (forgotForm) {
+    forgotForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("forgotEmail").value.trim();
+
+      if (!email) {
+        showNotification("⚠️ Vui lòng nhập email.");
+        return;
+      }
+
+      const btn = forgotForm.querySelector(".auth-submit-btn");
+      btn.disabled = true;
+      btn.querySelector("span").textContent = "Đang gửi...";
+
+      apiForgotPassword({ email })
+        .then((res) => {
+          showNotification(res.message);
+          forgotForm.reset();
+        })
+        .catch((err) => {
+          showNotification("❌ " + (err.message || "Yêu cầu thất bại."));
+        })
+        .finally(() => {
+          btn.disabled = false;
+          btn.querySelector("span").textContent = "Gửi yêu cầu";
+        });
+    });
+  }
+
+  // Close modal on ESC
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && authModal.classList.contains("show")) {
+      closeAuthModal();
+    }
+  });
+
+  // Init on load
+  updateNavbarState();
+})();
