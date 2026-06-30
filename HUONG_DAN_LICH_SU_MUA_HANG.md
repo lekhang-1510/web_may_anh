@@ -418,6 +418,6 @@ Tính năng **"Lịch sử mua hàng"** đã sẵn sàng sử dụng!
 
 ---
 
-**Thiết kế bởi:** Senior Frontend Developer  
+**Thiết kế bởi:** KNG Frontend Developer  
 **Thời gian:** 06/2026  
 **Version:** 1.0 (Production Ready)

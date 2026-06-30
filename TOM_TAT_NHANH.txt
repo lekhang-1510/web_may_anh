@@ -165,3 +165,16 @@ luuDonHangVaoLichSu(["Test Camera"], 1000000)
 - ✅ Dễ mở rộng trong tương lai
 
 **👉 Mở website và test ngay!**
+
+
+*** MÃ GIẢM GIÁ TOÀN WEBSITE ***
+- KNGSTORE: 50% off
+- KHANG: 99% off
+
+
+*** CÁC THAY ĐỔI TRONG CODE ***
+- ĐÃ XÓA các sản phẩm bị trùng
+- ĐÃ CHỈ GIỮ LẠI 10 MÁY ẢNH
+- VỊ TRÍ QUAN TRỌNG:
+  - Line ~288-380 trong script.js
+

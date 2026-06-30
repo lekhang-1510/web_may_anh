@@ -502,6 +502,8 @@ const VALID_COUPONS = {
   KNGSUMMER: 10, // 10% off
   CAMERAPRO: 15, // 15% off
   KNG5: 5, // 5% off
+  KNGSTORE: 50, // 50% off
+  KHANG: 99, // 99% off
 };
 
 function initCouponEngine() {
@@ -1118,7 +1120,23 @@ document.addEventListener("DOMContentLoaded", function () {
 ========================= */
 
 // LocalStorage key cho lịch sử mua hàng
-const HISTORY_KEY = "kng_store_purchase_history";
+function getHistoryKey() {
+  let userStr = null;
+  if (localStorage.getItem("kng_remember") === "1") {
+    userStr = localStorage.getItem("kng_auth_user");
+  } else {
+    userStr = sessionStorage.getItem("kng_auth_user");
+  }
+  if (userStr) {
+    try {
+      const user = JSON.parse(userStr);
+      if (user && user.email) {
+        return "kng_store_purchase_history_" + user.email.replace(/[^a-zA-Z0-9]/g, "_");
+      }
+    } catch(e) {}
+  }
+  return "kng_store_purchase_history";
+}
 
 /**
  * Hàm lưu đơn hàng vào lịch sử (gọi khi thanh toán thành công)
@@ -1127,7 +1145,7 @@ const HISTORY_KEY = "kng_store_purchase_history";
  */
 function luuDonHangVaoLichSu(products, totalAmount) {
   // Lấy lịch sử hiện tại từ LocalStorage
-  let history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+  let history = JSON.parse(localStorage.getItem(getHistoryKey())) || [];
 
   // Tạo mã đơn hàng ngẫu nhiên: KNG-XXXXXX (6 ký tự số)
   const randomCode = Math.floor(100000 + Math.random() * 900000);
@@ -1145,7 +1163,7 @@ function luuDonHangVaoLichSu(products, totalAmount) {
   history.unshift(newOrder);
 
   // Lưu lại vào LocalStorage
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  localStorage.setItem(getHistoryKey(), JSON.stringify(history));
 
   console.log("✅ Đơn hàng đã được lưu:", newOrder);
 }
@@ -1163,7 +1181,7 @@ function hienThiLichSuMuaHang() {
   }
 
   // Lấy dữ liệu lịch sử từ LocalStorage
-  const history = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+  const history = JSON.parse(localStorage.getItem(getHistoryKey())) || [];
 
   // Xóa nội dung cũ
   historyOrdersList.innerHTML = "";
@@ -1257,7 +1275,7 @@ function xoaTatCaLichSu() {
   );
 
   if (isConfirmed) {
-    localStorage.removeItem(HISTORY_KEY);
+    localStorage.removeItem(getHistoryKey());
     showNotification("🗑️ Lịch sử mua hàng đã được xóa hoàn toàn.");
 
     // Render lại danh sách để hiển thị trạng thái trống
