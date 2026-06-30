@@ -2685,8 +2685,9 @@ a {
   opacity: 0;
   transform: translateX(120%);
   transition: var(--transition);
-  z-index: 1100;
+  z-index: 99999;
   font-weight: 600;
+  pointer-events: none;
 }
 
 .notification.show {
