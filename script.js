@@ -3,178 +3,308 @@
 // =========================
 
 // =========================
-// PRODUCTS DATA
+// PRODUCTS DATA HAS BEEN MOVED TO products.js
 // =========================
-const PRODUCTS = [
-  {
-    id: 0,
-    badge: "Best Seller",
-    image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=800&q=80",
-    imageAlt: "Canon EOS R5",
-    category: "Mirrorless Full-frame",
-    name: "Canon EOS R5",
-    rating: "★★★★★",
-    price: "150.000.000 VNĐ",
-    priceRaw: 150000000,
-    description: "Quay 8K, lấy nét siêu nhanh, chuẩn cho nhiếp ảnh chuyên nghiệp. Canon EOS R5 là chiếc máy ảnh mirrorless hàng đầu với khả năng quay video 8K RAW cùng cảm biến 45MP full-frame thế hệ mới.",
-    specs: [
-      "Cảm biến Full-frame 45MP CMOS",
-      "Quay video 8K RAW 24fps",
-      "Lấy nét siêu nhanh DPAF II (0.05s)",
-      "ISO native 100-51,200",
-      "Chống rung IBIS 8 bậc",
-      "Kết nối Wi-Fi 6 & Bluetooth 5.0"
-    ]
-  },
-  {
-    id: 1,
-    badge: "Hot",
-    image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80",
-    imageAlt: "Sony A7R IV",
-    category: "Mirrorless 61MP",
-    name: "Sony A7R IV",
-    rating: "★★★★★",
-    price: "120.000.000 VNĐ",
-    priceRaw: 120000000,
-    description: "Độ phân giải cực cao, hoàn hảo cho studio và nhiếp ảnh thương mại. Sony A7R IV với cảm biến 61MP cho ảnh cực kỳ chi tiết, phù hợp cho in ấn khổ lớn và chụp ảnh phong cảnh.",
-    specs: [
-      "Cảm biến 61MP Full-frame BSI CMOS",
-      "AF 425 điểm pha lấy nét",
-      "Quay 4K 30fps Super 35",
-      "Độ phân giải cực cao — in khổ cực lớn",
-      "Real-time Eye AF & Animal AF",
-      "Thân máy chống bụi/nước chuẩn IPX4"
-    ]
-  },
-  {
-    id: 2,
-    badge: "New",
-    image: "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=800&q=80",
-    imageAlt: "Nikon Z6 II",
-    category: "Hybrid Camera",
-    name: "Nikon Z6 II",
-    rating: "★★★★★",
-    price: "80.000.000 VNĐ",
-    priceRaw: 80000000,
-    description: "Hiệu năng cân bằng cho cả quay phim và chụp ảnh chuyên sâu. Nikon Z6 II là lựa chọn hybrid hoàn hảo với bộ xử lý kép EXPEED 6, cho phép quay 4K 60fps và chụp liên tục 14fps.",
-    specs: [
-      "Cảm biến 24.5MP Full-frame BSI CMOS",
-      "Hybrid AF 273 điểm pha",
-      "Quay 4K 60fps & ProRes RAW",
-      "Chụp liên tục 14fps với AF",
-      "Bộ xử lý kép EXPEED 6",
-      "Khe cắm kép UHS-II & CFexpress"
-    ]
-  },
-  {
-    id: 3,
-    badge: "Retro",
-    image: "https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?auto=format&fit=crop&w=800&q=80",
-    imageAlt: "Fujifilm X-T4",
-    category: "APS-C Creative",
-    name: "Fujifilm X-T4",
-    rating: "★★★★★",
-    price: "70.000.000 VNĐ",
-    priceRaw: 70000000,
-    description: "Thiết kế cổ điển, màu film đẹp, cực hợp người sáng tạo nội dung. Fujifilm X-T4 nổi tiếng với 18 mô phỏng film độc quyền cho màu sắc phim analog đỉnh cao ngay trong máy.",
-    specs: [
-      "Cảm biến 26.1MP X-Trans CMOS IV",
-      "18 mô phỏng màu Film Fujifilm",
-      "Quay 4K 60fps / 240fps slow-motion",
-      "Thiết kế retro, dial cơ học",
-      "IBIS 6.5 bậc bù rung",
-      "Pin 500 shot — dung lượng lớn nhất dòng X"
-    ]
-  },
-  {
-    id: 4,
-    badge: "Pro DSLR",
-    image: "https://images.unsplash.com/photo-1516724562728-afc824a36e84?auto=format&fit=crop&w=800&q=80",
-    imageAlt: "Canon EOS 5D Mark IV",
-    category: "DSLR Full-frame",
-    name: "Canon EOS 5D Mark IV",
-    rating: "★★★★★",
-    price: "90.000.000 VNĐ",
-    priceRaw: 90000000,
-    description: "Biểu tượng DSLR bền bỉ cho chụp cưới, sự kiện và studio. Canon EOS 5D Mark IV là chuẩn mực DSLR chuyên nghiệp với độ bền vượt trội, kết nối GPS/Wi-Fi tích hợp và hiệu năng đáng tin cậy trong mọi điều kiện.",
-    specs: [
-      "Cảm biến 30.4MP Full-frame CMOS",
-      "AF 61 điểm — 41 cross-type",
-      "Quay 4K 30fps / Full HD 120fps",
-      "Thân máy chống bụi/nước cao cấp",
-      "GPS & Wi-Fi tích hợp",
-      "Khe nhớ kép CF + SD"
-    ]
-  },
-  {
-    id: 5,
-    badge: "Sports",
-    image: "https://images.unsplash.com/photo-1520390138845-fd2d229dd553?auto=format&fit=crop&w=800&q=80",
-    imageAlt: "Sony A9 II",
-    category: "Speed Performance",
-    name: "Sony A9 II",
-    rating: "★★★★★",
-    price: "110.000.000 VNĐ",
-    priceRaw: 110000000,
-    description: "Tốc độ chụp siêu nhanh cho thể thao, sự kiện và báo chí. Sony A9 II với tốc độ chụp 20fps silent, không bị blackout, là vũ khí tối thượng cho nhiếp ảnh thể thao và báo chí.",
-    specs: [
-      "Cảm biến 24.2MP Full-frame Stacked CMOS",
-      "AF 693 điểm lấy nét siêu tốc",
-      "Chụp 20fps liên tục, không blackout",
-      "Quay 4K 60fps video chuyên nghiệp",
-      "LAN port cho truyền ảnh tốc độ cao",
-      "Real-time Eye AF & Bird AF"
-    ]
-  }
-];
+
 
 // =========================
 // RENDER PRODUCT CARDS
 // =========================
-function renderProductCards() {
+function renderProductCards(productsToRender = PRODUCTS) {
   const grid = document.getElementById("product-grid");
   if (!grid) return;
 
-  grid.innerHTML = PRODUCTS.map((p) => `
+  if (productsToRender.length === 0) {
+    grid.innerHTML = `
+      <div class="no-results" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
+        <i class="fa-solid fa-box-open" style="font-size: 3rem; margin-bottom: 15px; display: block; opacity: 0.5;"></i>
+        <h3 style="margin-bottom: 10px;">Không tìm thấy sản phẩm nào</h3>
+        <p>Vui lòng thử lại với từ khóa hoặc bộ lọc khác.</p>
+        <button class="primary-btn" style="margin-top: 15px;" onclick="resetFilters()">Xóa bộ lọc</button>
+      </div>
+    `;
+    updateResultsCount(0);
+    return;
+  }
+
+  grid.innerHTML = productsToRender.map((p) => {
+    const isOutOfStock = p.stock === 0;
+    const oldPriceHtml = p.oldPriceRaw 
+      ? `<span class="old-price" style="text-decoration: line-through; font-size: 0.85em; color: var(--text-muted); margin-left: 8px;">${formatPrice(p.oldPriceRaw)}</span>` 
+      : '';
+    const discountBadgeHtml = p.oldPriceRaw 
+      ? `<span class="product-discount-badge" style="position: absolute; top: 12px; left: 12px; background: var(--accent); color: white; padding: 4px 8px; border-radius: var(--radius-sm); font-size: 0.75rem; font-weight: 700; z-index: 2;">-${Math.round((1 - p.priceRaw / p.oldPriceRaw) * 100)}%</span>` 
+      : '';
+    const outOfStockBadgeHtml = isOutOfStock 
+      ? `<div class="out-of-stock-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 3;">
+           <span style="background: rgba(0,0,0,0.8); color: white; padding: 8px 16px; border: 1px solid var(--accent); font-weight: 600; transform: rotate(-15deg); letter-spacing: 1px;">HẾT HÀNG</span>
+         </div>` 
+      : '';
+      
+    const ratingHtml = `<div class="rating" style="display: flex; align-items: center; gap: 5px;">
+                          <span>${p.rating}</span>
+                          <span style="color: var(--text-muted); font-size: 0.8rem;">(${p.reviews})</span>
+                        </div>`;
+
+    return `
     <div class="product-card" onclick="openProductModal(${p.id})">
-      <span class="product-badge">${p.badge}</span>
-      <img src="${p.image}" alt="${p.imageAlt}" loading="lazy" />
+      ${discountBadgeHtml}
+      ${!p.oldPriceRaw && p.badge ? `<span class="product-badge" style="z-index: 2;">${p.badge}</span>` : ''}
+      <div style="position: relative; width: 100%; aspect-ratio: 4/3; overflow: hidden; border-radius: var(--radius-sm) var(--radius-sm) 0 0;">
+        ${outOfStockBadgeHtml}
+        <img src="${p.image}" alt="${p.imageAlt}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;" />
+      </div>
+      <div class="content" style="display: flex; flex-direction: column; height: 100%;">
+        <p class="product-category">${p.brand} • ${p.category}</p>
+        <h3 style="flex-grow: 1; margin-bottom: 5px;">${p.name}</h3>
+        ${ratingHtml}
+        <p class="price" style="margin-top: auto; padding-top: 10px;">${p.price}${oldPriceHtml}</p>
+        
+        <div class="card-actions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px;">
+          <button class="view-detail-btn" onclick="event.stopPropagation(); openProductModal(${p.id})" style="width: 100%; padding: 8px; background: transparent; border: 1px solid var(--border); color: var(--text); border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition);">
+            <i class="fa-solid fa-eye"></i> Chi tiết
+          </button>
+          <button class="add-to-cart-btn" onclick="event.stopPropagation(); addToCart(${p.id}, 1)" ${isOutOfStock ? 'disabled' : ''} style="width: 100%; padding: 8px; background: ${isOutOfStock ? 'var(--bg-card)' : 'var(--primary)'}; border: 1px solid ${isOutOfStock ? 'var(--border)' : 'var(--primary)'}; color: ${isOutOfStock ? 'var(--text-muted)' : '#000'}; border-radius: var(--radius-sm); cursor: ${isOutOfStock ? 'not-allowed' : 'pointer'}; transition: var(--transition); font-weight: 600;">
+            <i class="fa-solid fa-cart-plus"></i> Thêm
+          </button>
+        </div>
+      </div>
+    </div>
+  `}).join("");
+
+  attachCardObserver();
+  updateResultsCount(productsToRender.length);
+}
+
+function renderSkeletonCards(count = 6) {
+  const grid = document.getElementById("product-grid");
+  if (!grid) return;
+  
+  grid.innerHTML = Array(count).fill(0).map(() => `
+    <div class="product-card skeleton-card" style="pointer-events: none;">
+      <div class="skeleton-img" style="width: 100%; aspect-ratio: 4/3; background: var(--bg-hover); animation: pulse 1.5s infinite;"></div>
       <div class="content">
-        <p class="product-category">${p.category}</p>
-        <h3>${p.name}</h3>
-        <div class="rating">${p.rating}</div>
-        <p class="price">${p.price}</p>
-        <button class="view-detail-btn" onclick="event.stopPropagation(); openProductModal(${p.id})">
-          <i class="fa-solid fa-eye"></i> Xem chi tiết
-        </button>
+        <div style="height: 12px; width: 40%; background: var(--bg-hover); margin-bottom: 8px; border-radius: 4px; animation: pulse 1.5s infinite;"></div>
+        <div style="height: 20px; width: 80%; background: var(--bg-hover); margin-bottom: 8px; border-radius: 4px; animation: pulse 1.5s infinite;"></div>
+        <div style="height: 16px; width: 30%; background: var(--bg-hover); margin-bottom: 12px; border-radius: 4px; animation: pulse 1.5s infinite;"></div>
+        <div style="height: 24px; width: 50%; background: var(--bg-hover); margin-bottom: 15px; border-radius: 4px; animation: pulse 1.5s infinite;"></div>
+        <div style="display: flex; gap: 8px;">
+          <div style="height: 36px; flex: 1; background: var(--bg-hover); border-radius: var(--radius-sm); animation: pulse 1.5s infinite;"></div>
+          <div style="height: 36px; flex: 1; background: var(--bg-hover); border-radius: var(--radius-sm); animation: pulse 1.5s infinite;"></div>
+        </div>
       </div>
     </div>
   `).join("");
+}
+
+function updateResultsCount(count) {
+  let counter = document.getElementById("resultsCounter");
+  if (!counter) {
+    const filtersWrap = document.querySelector('.product-filters');
+    if (filtersWrap) {
+      counter = document.createElement("div");
+      counter.id = "resultsCounter";
+      counter.style.cssText = "margin-top: 15px; font-size: 0.9rem; color: var(--text-muted); text-align: center; width: 100%;";
+      filtersWrap.after(counter);
+    }
+  }
+  if (counter) {
+    counter.textContent = `Tìm thấy ${count} sản phẩm`;
+  }
+}
+
+function attachCardObserver() {
+  const cards = document.querySelectorAll(".product-card:not(.skeleton-card)");
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = "1";
+          entry.target.style.transform = "translateY(0)";
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    cards.forEach((card) => {
+      card.style.opacity = "0";
+      card.style.transform = "translateY(20px)";
+      card.style.transition = "opacity 0.5s ease-out, transform 0.5s ease-out";
+      observer.observe(card);
+    });
+  }
+}
+
+// =========================
+// SEARCH & FILTER
+// =========================
+let currentBrandFilter = 'all';
+let currentSearchTerm = '';
+let searchTimeout = null;
+
+function initSearchAndFilter() {
+  const searchInput = document.querySelector('.search-bar');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        currentSearchTerm = e.target.value.toLowerCase().trim();
+        applyFilters();
+      }, 300);
+    });
+  }
+
+  if (filterBtns.length > 0) {
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentBrandFilter = btn.getAttribute('data-brand') || 'all';
+        applyFilters();
+      });
+    });
+  }
+  
+  // Handle mega menu brand links
+  const brandLinks = document.querySelectorAll('.mega-links a[data-filter-brand]');
+  brandLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const brand = link.getAttribute('data-filter-brand');
+      
+      const productsSection = document.getElementById('products');
+      if (productsSection) {
+        productsSection.scrollIntoView({ behavior: 'smooth' });
+      }
+      
+      currentBrandFilter = brand;
+      
+      filterBtns.forEach(b => {
+        const btnBrand = b.getAttribute('data-brand');
+        if (btnBrand === brand) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+      
+      applyFilters();
+    });
+  });
+}
+
+function applyFilters() {
+  let filtered = PRODUCTS;
+  
+  if (currentBrandFilter !== 'all') {
+    filtered = filtered.filter(p => p.brand.toLowerCase() === currentBrandFilter.toLowerCase());
+  }
+  
+  if (currentSearchTerm !== '') {
+    filtered = filtered.filter(p => 
+      p.name.toLowerCase().includes(currentSearchTerm) ||
+      p.category.toLowerCase().includes(currentSearchTerm) ||
+      p.brand.toLowerCase().includes(currentSearchTerm)
+    );
+  }
+  
+  renderProductCards(filtered);
+}
+
+function resetFilters() {
+  currentBrandFilter = 'all';
+  currentSearchTerm = '';
+  
+  const searchInput = document.querySelector('.search-bar');
+  if (searchInput) searchInput.value = '';
+  
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  filterBtns.forEach(b => {
+    if (b.getAttribute('data-brand') === 'all') {
+      b.classList.add('active');
+    } else {
+      b.classList.remove('active');
+    }
+  });
+  
+  applyFilters();
 }
 
 // =========================
 // PRODUCT DETAIL MODAL
 // =========================
 function openProductModal(id) {
-  const p = PRODUCTS[id];
+  const p = PRODUCTS.find(prod => prod.id === id);
   if (!p) return;
 
-  document.getElementById("pdBadge").textContent = p.badge;
+  const isOutOfStock = p.stock === 0;
+
+  document.getElementById("pdBadge").textContent = p.badge || "";
+  document.getElementById("pdBadge").style.display = p.badge && !p.oldPriceRaw ? "inline-block" : "none";
+  
   document.getElementById("pdImage").src = p.image;
   document.getElementById("pdImage").alt = p.imageAlt;
-  document.getElementById("pdCategory").textContent = p.category;
+  document.getElementById("pdCategory").innerHTML = `${p.brand} &bull; ${p.category}`;
   document.getElementById("pdName").textContent = p.name;
-  document.getElementById("pdRating").textContent = p.rating;
-  document.getElementById("pdPrice").textContent = p.price;
+  document.getElementById("pdRating").innerHTML = `${p.rating} <span style="color: var(--text-muted); font-size: 0.9em;">(${p.reviews} đánh giá)</span>`;
+  
+  const oldPriceHtml = p.oldPriceRaw 
+    ? `<span style="text-decoration: line-through; font-size: 0.7em; color: var(--text-muted); margin-left: 10px; font-weight: 400;">${formatPrice(p.oldPriceRaw)}</span>` 
+    : '';
+  document.getElementById("pdPrice").innerHTML = `${p.price}${oldPriceHtml}`;
   document.getElementById("pdDesc").textContent = p.description;
 
   const specsList = document.getElementById("pdSpecs");
   specsList.innerHTML = p.specs.map((s) => `<li><i class="fa-solid fa-check"></i>${s}</li>`).join("");
 
   const addBtn = document.getElementById("pdAddCart");
-  addBtn.onclick = function () {
-    addToCart(p.name, p.priceRaw);
-  };
+  const buyNowBtn = document.getElementById("pdBuyNow");
+  
+  // Stock indicator
+  let stockHtml = "";
+  if (isOutOfStock) {
+    stockHtml = `<div style="color: var(--accent); margin-top: 15px; font-weight: 600; font-size: 0.9rem;"><i class="fa-solid fa-xmark-circle"></i> Sản phẩm đã hết hàng</div>`;
+    addBtn.disabled = true;
+    addBtn.style.opacity = "0.5";
+    addBtn.style.cursor = "not-allowed";
+    if (buyNowBtn) {
+      buyNowBtn.disabled = true;
+      buyNowBtn.style.opacity = "0.5";
+      buyNowBtn.style.cursor = "not-allowed";
+    }
+  } else {
+    const stockClass = p.stock <= 5 ? "color: #ffcc00;" : "color: #22c55e;";
+    const stockIcon = p.stock <= 5 ? "fa-exclamation-triangle" : "fa-check-circle";
+    stockHtml = `<div style="${stockClass} margin-top: 15px; font-weight: 600; font-size: 0.9rem;"><i class="fa-solid ${stockIcon}"></i> Còn ${p.stock} sản phẩm trong kho</div>`;
+    
+    addBtn.disabled = false;
+    addBtn.style.opacity = "1";
+    addBtn.style.cursor = "pointer";
+    addBtn.onclick = function () {
+      addToCart(p.id, 1);
+    };
+
+    if (buyNowBtn) {
+      buyNowBtn.disabled = false;
+      buyNowBtn.style.opacity = "1";
+      buyNowBtn.style.cursor = "pointer";
+      buyNowBtn.onclick = function () {
+        addToCart(p.id, 1);
+        closeProductModal();
+        showCartItems();
+      };
+    }
+  }
+  
+  let stockEl = document.getElementById("pdStock");
+  if (!stockEl) {
+    stockEl = document.createElement("div");
+    stockEl.id = "pdStock";
+    addBtn.parentElement.parentNode.insertBefore(stockEl, addBtn.parentElement);
+  }
+  stockEl.innerHTML = stockHtml;
 
   const modal = document.getElementById("productDetailModal");
   modal.classList.add("active");
@@ -201,8 +331,13 @@ document.addEventListener("DOMContentLoaded", function () {
     pdClose.addEventListener("click", closeProductModal);
   }
 
-  // Render cards
-  renderProductCards();
+  // Render components
+  renderHeroBanner();
+  renderSkeletonCards();
+  setTimeout(() => {
+    renderProductCards();
+    initSearchAndFilter();
+  }, 600);
 });
 
 
@@ -210,8 +345,37 @@ document.addEventListener("DOMContentLoaded", function () {
 // HERO BANNER / SLIDER
 // =========================
 let currentSlide = 0;
-const totalSlides = 4;
+let totalSlides = 0;
 let autoPlayInterval;
+
+function renderHeroBanner() {
+  const heroSlider = document.getElementById("heroSlider");
+  const heroDots = document.getElementById("heroDots");
+  if (!heroSlider || !heroDots) return;
+
+  const heroProducts = PRODUCTS.filter(p => p.isHero);
+  totalSlides = heroProducts.length;
+
+  heroSlider.innerHTML = heroProducts.map((p, index) => `
+    <div class="hero-slide ${index === 0 ? 'active' : ''}" style="background-image: ${p.heroBg};">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1 class="hero-title">${p.name}</h1>
+          <p class="hero-subtitle">${p.heroSubtitle}</p>
+          <p class="hero-description">${p.heroDesc}</p>
+          <a href="#" class="hero-btn" onclick="event.preventDefault(); openProductModal(${p.id})">
+            <span>Khám Phá</span>
+            <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+  heroDots.innerHTML = heroProducts.map((_, index) => `
+    <span class="hero-dot ${index === 0 ? 'active' : ''}" onclick="goToSlide(${index})"></span>
+  `).join("");
+}
 
 // Initialize Slider
 function initSlider() {
@@ -351,7 +515,7 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 // UPDATE CART COUNT
 // =========================
 function updateCartCount() {
-  const count = cart.length;
+  const count = cart.reduce((total, item) => total + item.quantity, 0);
   const cartCount = document.getElementById("cart-count");
   if (cartCount) {
     cartCount.textContent = count;
@@ -389,17 +553,72 @@ function showNotification(message, forceType = null) {
 // =========================
 // ADD TO CART
 // =========================
-function addToCart(productName, price) {
-  cart.push({ name: productName, price: price });
+function addToCart(productId, quantity = 1) {
+  const product = PRODUCTS.find(p => p.id === productId);
+  if (!product) return;
+
+  if (product.stock <= 0) {
+    showNotification(`❌ ${product.name} đã hết hàng!`, "error");
+    return;
+  }
+
+  const existingItem = cart.find(item => item.id === productId);
+  if (existingItem) {
+    if (existingItem.quantity + quantity > product.stock) {
+      showNotification(`⚠️ Chỉ còn ${product.stock} sản phẩm trong kho!`, "error");
+      return;
+    }
+    existingItem.quantity += quantity;
+  } else {
+    cart.push({ id: productId, quantity: quantity });
+  }
+
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCartCount();
-  showNotification(`🛒 ${productName} đã được thêm vào giỏ hàng!`);
+  showNotification(`🛒 ${product.name} đã được thêm vào giỏ hàng!`);
+}
+
+function updateCartQuantity(productId, change) {
+  const itemIndex = cart.findIndex(item => item.id === productId);
+  if (itemIndex > -1) {
+    const product = PRODUCTS.find(p => p.id === productId);
+    const newQuantity = cart[itemIndex].quantity + change;
+    
+    if (newQuantity <= 0) {
+      removeFromCart(productId);
+      return;
+    }
+    
+    if (product && newQuantity > product.stock) {
+      showNotification(`⚠️ Chỉ còn ${product.stock} sản phẩm trong kho!`, "error");
+      return;
+    }
+
+    cart[itemIndex].quantity = newQuantity;
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
+    showCartItems(); // Re-render cart
+  }
+}
+
+function removeFromCart(productId) {
+  cart = cart.filter(item => item.id !== productId);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartCount();
+
+  if (cart.length === 0) {
+    document.getElementById("checkoutModal").classList.remove("show");
+    showNotification("Giỏ hàng của bạn đã trống");
+  } else {
+    showCartItems();
+  }
 }
 
 // =========================
 // PRICE HELPERS
 // =========================
 function parsePrice(priceText) {
+  if (typeof priceText === "number") return priceText;
   return Number(priceText.replace(/[^\d]/g, "")) || 0;
 }
 
@@ -418,8 +637,6 @@ function showCartItems() {
 
   const checkoutModal = document.getElementById("checkoutModal");
   const checkoutItems = document.getElementById("checkoutItems");
-  const checkoutSubtotal = document.getElementById("checkoutSubtotal");
-  const checkoutTotal = document.getElementById("checkoutTotal");
 
   if (!checkoutModal) return;
 
@@ -435,44 +652,28 @@ function showCartItems() {
   }
   if (discountRow) discountRow.style.display = "none";
 
-  // Product image map for known products
-  const productImages = {
-    "Canon EOS R5":
-      "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=80&q=80",
-    "Sony A7R IV":
-      "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=80&q=80",
-    "Nikon Z6 II":
-      "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=80&q=80",
-    "Fujifilm X-T4":
-      "https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?auto=format&fit=crop&w=80&q=80",
-    "Canon EOS 5D Mark IV":
-      "https://images.unsplash.com/photo-1516724562728-afc824a36e84?auto=format&fit=crop&w=80&q=80",
-    "Sony A9 II":
-      "https://images.unsplash.com/photo-1520390138845-fd2d229dd553?auto=format&fit=crop&w=80&q=80",
-  };
-
   // Populate summary list
   if (checkoutItems) {
     checkoutItems.innerHTML = "";
-    let subtotal = 0;
 
-    cart.forEach((item, index) => {
-      const priceNumber = parsePrice(item.price);
-      subtotal += priceNumber;
-      const imgSrc =
-        productImages[item.name] ||
-        "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=80&q=80";
+    cart.forEach((item) => {
+      const product = PRODUCTS.find(p => p.id === item.id);
+      if (!product) return; // In case product was removed from DB
 
       checkoutItems.innerHTML += `
         <div class="checkout-summary-item">
-          <img class="summary-item-img" src="${imgSrc}" alt="${item.name}" />
+          <img class="summary-item-img" src="${product.image}" alt="${product.imageAlt}" />
           <div class="summary-item-info">
-            <h4>${item.name}</h4>
-            <span>Số lượng: 1 &nbsp;·&nbsp;
-              <button onclick="removeFromCart(${index})" style="background:none;border:none;color:#ff5252;cursor:pointer;font-size:0.75rem;font-weight:600;padding:0;">✕ Xóa</button>
-            </span>
+            <h4>${product.name}</h4>
+            <div class="qty-control">
+              <span class="qty-label">Số lượng:</span>
+              <button type="button" class="qty-btn" onclick="updateCartQuantity(${item.id}, -1)">-</button>
+              <span class="qty-val">${item.quantity}</span>
+              <button type="button" class="qty-btn" onclick="updateCartQuantity(${item.id}, 1)">+</button>
+              <button type="button" class="remove-item-btn" onclick="removeFromCart(${item.id})">✕ Xóa</button>
+            </div>
           </div>
-          <span class="summary-item-price">${item.price}</span>
+          <span class="summary-item-price">${formatPrice(product.priceRaw * item.quantity)}</span>
         </div>
       `;
     });
@@ -505,7 +706,10 @@ function showCartItems() {
 function updateCheckoutPricing() {
   let subtotal = 0;
   cart.forEach((item) => {
-    subtotal += parsePrice(item.price);
+    const product = PRODUCTS.find(p => p.id === item.id);
+    if (product) {
+      subtotal += product.priceRaw * item.quantity;
+    }
   });
 
   const discountAmount = Math.round(subtotal * (couponDiscount / 100));
@@ -687,7 +891,10 @@ function initPaymentTabs() {
 function getCheckoutTotal() {
   let subtotal = 0;
   cart.forEach((item) => {
-    subtotal += parsePrice(item.price);
+    const product = PRODUCTS.find(p => p.id === item.id);
+    if (product) {
+      subtotal += product.priceRaw * item.quantity;
+    }
   });
   const discountAmount = Math.round(subtotal * (couponDiscount / 100));
   return subtotal - discountAmount;
@@ -852,19 +1059,7 @@ function initEwalletSelector() {
 }
 
 // =========================
-function removeFromCart(index) {
-  cart.splice(index, 1);
-  localStorage.setItem("cart", JSON.stringify(cart));
-  updateCartCount();
-
-  if (cart.length === 0) {
-    document.getElementById("checkoutModal").classList.remove("show");
-    showNotification("Sản phẩm đã được xóa khỏi giỏ hàng");
-  } else {
-    showCartItems();
-    showNotification("Sản phẩm đã được xóa khỏi giỏ hàng");
-  }
-}
+// (removeFromCart duplicate removed)
 
 // Timers for success auto-redirect
 let successCountdownTimeout;
@@ -1000,7 +1195,8 @@ function showSuccessModal(customerName, paymentMethod, total, customerEmail) {
 
 function viewOrderDetails() {
   clearSuccessTimers();
-  showNotification("🔍 Tính năng Xem chi tiết đơn hàng đang được phát triển!");
+  closeSuccessModal();
+  hienThiLichSuMuaHang();
 }
 
 // =========================
@@ -1039,7 +1235,6 @@ function closeSuccessModal() {
 
   document.getElementById("checkoutItems").innerHTML = "";
   document.getElementById("checkoutTotal").textContent = "0đ";
-  document.getElementById("checkoutTotalRight").textContent = "0đ";
 }
 
 // =========================
@@ -1102,26 +1297,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // =========================
-  // BUY BUTTONS
-  // =========================
-  document.querySelectorAll(".buy-btn").forEach((button) => {
-    button.addEventListener("click", function () {
-      const productCard = this.closest(".product-card");
-      const productName = productCard.querySelector("h3").textContent;
-      const productPrice = productCard.querySelector(".price").textContent;
-
-      addToCart(productName, productPrice);
-
-      this.textContent = "Đã thêm ✓";
-      this.disabled = true;
-
-      setTimeout(() => {
-        this.textContent = "Thêm vào giỏ";
-        this.disabled = false;
-      }, 1500);
-    });
-  });
+  // (Old buy buttons removed)
 
   // =========================
   // CART BUTTON
@@ -1131,60 +1307,7 @@ document.addEventListener("DOMContentLoaded", function () {
     cartBtn.addEventListener("click", showCartItems);
   }
 
-  // =========================
-  // SEARCH FUNCTION
-  // =========================
-  const searchBtn = document.querySelector(".search-btn");
-  const searchBar = document.querySelector(".search-bar");
-  const productCards = document.querySelectorAll(".product-card");
-
-  function searchProducts() {
-    if (!searchBar) return;
-
-    const query = searchBar.value.trim().toLowerCase();
-    let found = false;
-
-    productCards.forEach((card) => {
-      const title = card.querySelector("h3")?.textContent.toLowerCase() || "";
-      const category =
-        card.querySelector(".product-category")?.textContent.toLowerCase() ||
-        "";
-      const description =
-        card.querySelector(".product-desc")?.textContent.toLowerCase() || "";
-
-      if (
-        !query ||
-        title.includes(query) ||
-        category.includes(query) ||
-        description.includes(query)
-      ) {
-        card.style.display = "block";
-        found = true;
-      } else {
-        card.style.display = "none";
-      }
-    });
-
-    if (!query) return;
-
-    if (found) {
-      showNotification(`🔍 Đã tìm thấy kết quả cho: "${query}"`);
-    } else {
-      showNotification("❌ Không tìm thấy sản phẩm phù hợp.");
-    }
-  }
-
-  if (searchBtn) {
-    searchBtn.addEventListener("click", searchProducts);
-  }
-
-  if (searchBar) {
-    searchBar.addEventListener("keypress", function (e) {
-      if (e.key === "Enter") {
-        searchProducts();
-      }
-    });
-  }
+  // (Search is now handled dynamically in initSearchAndFilter)
 
   // =========================
   // STICKY HEADER
@@ -1219,7 +1342,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document
     .querySelectorAll(
-      ".product-card, .brand-card, .feature-card, .testimonial-card, .section-title h2",
+      ".brand-card, .feature-card, .testimonial-card, .section-title h2",
     )
     .forEach((card) => {
       card.classList.add("fade-in");
@@ -1266,36 +1389,56 @@ document.addEventListener("DOMContentLoaded", function () {
     checkoutForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
-      const name = document.getElementById("customerName")?.value.trim();
-      const phone = document.getElementById("customerPhone")?.value.trim();
-      const province = document.getElementById("checkoutProvince");
-      const district = document.getElementById("checkoutDistrict");
-      const ward = document.getElementById("checkoutWard");
-      const streetDetail = document
-        .getElementById("customerAddressDetail")
-        ?.value.trim();
-      const paymentElement = document.querySelector(
-        'input[name="payment"]:checked',
-      );
+      // Reset previous error styles
+      document.querySelectorAll('.form-group-custom input, .form-group-custom select, .form-group-custom textarea').forEach(el => {
+        el.style.borderColor = "";
+      });
 
-      // Validate required fields
-      if (!name || !phone) {
-        showNotification("⚠️ Vui lòng nhập đầy đủ họ tên và số điện thoại.");
-        return;
+      const nameInput = document.getElementById("customerName");
+      const phoneInput = document.getElementById("customerPhone");
+      const provinceInput = document.getElementById("checkoutProvince");
+      const districtInput = document.getElementById("checkoutDistrict");
+      const wardInput = document.getElementById("checkoutWard");
+      const streetInput = document.getElementById("customerAddressDetail");
+      const paymentElement = document.querySelector('input[name="payment"]:checked');
+
+      const name = nameInput?.value.trim();
+      const phone = phoneInput?.value.trim();
+      const province = provinceInput?.value;
+      const district = districtInput?.value;
+      const ward = wardInput?.value;
+      const streetDetail = streetInput?.value.trim();
+
+      let hasError = false;
+      
+      function highlightError(input) {
+        if (input) {
+          input.style.borderColor = "var(--accent)";
+          hasError = true;
+        }
       }
 
-      if (
-        !province?.value ||
-        !district?.value ||
-        !ward?.value ||
-        !streetDetail
-      ) {
-        showNotification("⚠️ Vui lòng chọn đầy đủ địa chỉ giao hàng.");
+      if (!name) highlightError(nameInput);
+      if (!phone) {
+        highlightError(phoneInput);
+      } else if (!/^(0[3|5|7|8|9])+([0-9]{8})$/.test(phone)) {
+        highlightError(phoneInput);
+        showNotification("⚠️ Số điện thoại không hợp lệ.", "error");
+        return;
+      }
+      
+      if (!province) highlightError(provinceInput);
+      if (!district) highlightError(districtInput);
+      if (!ward) highlightError(wardInput);
+      if (!streetDetail) highlightError(streetInput);
+
+      if (hasError) {
+        showNotification("⚠️ Vui lòng điền đầy đủ thông tin bắt buộc.", "error");
         return;
       }
 
       if (!paymentElement) {
-        showNotification("⚠️ Vui lòng chọn hình thức thanh toán.");
+        showNotification("⚠️ Vui lòng chọn hình thức thanh toán.", "error");
         return;
       }
 
@@ -1303,22 +1446,18 @@ document.addEventListener("DOMContentLoaded", function () {
       const totalFormatted = formatPrice(getCheckoutTotal());
 
       // === LƯU LỊCH SỬ MUA HÀNG ===
-      // Lấy danh sách tên sản phẩm từ giỏ hàng
-      const productNames = cart.map((item) => item.name);
-      // Lấy tổng tiền (số, không phải string)
+      const productNames = cart.map((item) => {
+        const p = PRODUCTS.find(prod => prod.id === item.id);
+        return p ? `${p.name} (x${item.quantity})` : "Sản phẩm không rõ";
+      });
       const totalAmount = getCheckoutTotal();
-      // Gọi hàm lưu lịch sử
       luuDonHangVaoLichSu(productNames, totalAmount);
 
-      // Show success modal with payment details
-      const email =
-        document.getElementById("customerEmail")?.value.trim() || "";
+      const email = document.getElementById("customerEmail")?.value.trim() || "";
       showSuccessModal(name, paymentValue, totalFormatted, email);
 
-      // Hide checkout form
       checkoutForm.style.display = "none";
 
-      // Close checkout modal after showing success modal
       setTimeout(() => {
         checkoutModal.classList.remove("show");
       }, 300);
