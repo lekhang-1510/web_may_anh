@@ -3,6 +3,210 @@
 // =========================
 
 // =========================
+// PRODUCTS DATA
+// =========================
+const PRODUCTS = [
+  {
+    id: 0,
+    badge: "Best Seller",
+    image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "Canon EOS R5",
+    category: "Mirrorless Full-frame",
+    name: "Canon EOS R5",
+    rating: "★★★★★",
+    price: "150.000.000 VNĐ",
+    priceRaw: 150000000,
+    description: "Quay 8K, lấy nét siêu nhanh, chuẩn cho nhiếp ảnh chuyên nghiệp. Canon EOS R5 là chiếc máy ảnh mirrorless hàng đầu với khả năng quay video 8K RAW cùng cảm biến 45MP full-frame thế hệ mới.",
+    specs: [
+      "Cảm biến Full-frame 45MP CMOS",
+      "Quay video 8K RAW 24fps",
+      "Lấy nét siêu nhanh DPAF II (0.05s)",
+      "ISO native 100-51,200",
+      "Chống rung IBIS 8 bậc",
+      "Kết nối Wi-Fi 6 & Bluetooth 5.0"
+    ]
+  },
+  {
+    id: 1,
+    badge: "Hot",
+    image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "Sony A7R IV",
+    category: "Mirrorless 61MP",
+    name: "Sony A7R IV",
+    rating: "★★★★★",
+    price: "120.000.000 VNĐ",
+    priceRaw: 120000000,
+    description: "Độ phân giải cực cao, hoàn hảo cho studio và nhiếp ảnh thương mại. Sony A7R IV với cảm biến 61MP cho ảnh cực kỳ chi tiết, phù hợp cho in ấn khổ lớn và chụp ảnh phong cảnh.",
+    specs: [
+      "Cảm biến 61MP Full-frame BSI CMOS",
+      "AF 425 điểm pha lấy nét",
+      "Quay 4K 30fps Super 35",
+      "Độ phân giải cực cao — in khổ cực lớn",
+      "Real-time Eye AF & Animal AF",
+      "Thân máy chống bụi/nước chuẩn IPX4"
+    ]
+  },
+  {
+    id: 2,
+    badge: "New",
+    image: "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "Nikon Z6 II",
+    category: "Hybrid Camera",
+    name: "Nikon Z6 II",
+    rating: "★★★★★",
+    price: "80.000.000 VNĐ",
+    priceRaw: 80000000,
+    description: "Hiệu năng cân bằng cho cả quay phim và chụp ảnh chuyên sâu. Nikon Z6 II là lựa chọn hybrid hoàn hảo với bộ xử lý kép EXPEED 6, cho phép quay 4K 60fps và chụp liên tục 14fps.",
+    specs: [
+      "Cảm biến 24.5MP Full-frame BSI CMOS",
+      "Hybrid AF 273 điểm pha",
+      "Quay 4K 60fps & ProRes RAW",
+      "Chụp liên tục 14fps với AF",
+      "Bộ xử lý kép EXPEED 6",
+      "Khe cắm kép UHS-II & CFexpress"
+    ]
+  },
+  {
+    id: 3,
+    badge: "Retro",
+    image: "https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "Fujifilm X-T4",
+    category: "APS-C Creative",
+    name: "Fujifilm X-T4",
+    rating: "★★★★★",
+    price: "70.000.000 VNĐ",
+    priceRaw: 70000000,
+    description: "Thiết kế cổ điển, màu film đẹp, cực hợp người sáng tạo nội dung. Fujifilm X-T4 nổi tiếng với 18 mô phỏng film độc quyền cho màu sắc phim analog đỉnh cao ngay trong máy.",
+    specs: [
+      "Cảm biến 26.1MP X-Trans CMOS IV",
+      "18 mô phỏng màu Film Fujifilm",
+      "Quay 4K 60fps / 240fps slow-motion",
+      "Thiết kế retro, dial cơ học",
+      "IBIS 6.5 bậc bù rung",
+      "Pin 500 shot — dung lượng lớn nhất dòng X"
+    ]
+  },
+  {
+    id: 4,
+    badge: "Pro DSLR",
+    image: "https://images.unsplash.com/photo-1516724562728-afc824a36e84?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "Canon EOS 5D Mark IV",
+    category: "DSLR Full-frame",
+    name: "Canon EOS 5D Mark IV",
+    rating: "★★★★★",
+    price: "90.000.000 VNĐ",
+    priceRaw: 90000000,
+    description: "Biểu tượng DSLR bền bỉ cho chụp cưới, sự kiện và studio. Canon EOS 5D Mark IV là chuẩn mực DSLR chuyên nghiệp với độ bền vượt trội, kết nối GPS/Wi-Fi tích hợp và hiệu năng đáng tin cậy trong mọi điều kiện.",
+    specs: [
+      "Cảm biến 30.4MP Full-frame CMOS",
+      "AF 61 điểm — 41 cross-type",
+      "Quay 4K 30fps / Full HD 120fps",
+      "Thân máy chống bụi/nước cao cấp",
+      "GPS & Wi-Fi tích hợp",
+      "Khe nhớ kép CF + SD"
+    ]
+  },
+  {
+    id: 5,
+    badge: "Sports",
+    image: "https://images.unsplash.com/photo-1520390138845-fd2d229dd553?auto=format&fit=crop&w=800&q=80",
+    imageAlt: "Sony A9 II",
+    category: "Speed Performance",
+    name: "Sony A9 II",
+    rating: "★★★★★",
+    price: "110.000.000 VNĐ",
+    priceRaw: 110000000,
+    description: "Tốc độ chụp siêu nhanh cho thể thao, sự kiện và báo chí. Sony A9 II với tốc độ chụp 20fps silent, không bị blackout, là vũ khí tối thượng cho nhiếp ảnh thể thao và báo chí.",
+    specs: [
+      "Cảm biến 24.2MP Full-frame Stacked CMOS",
+      "AF 693 điểm lấy nét siêu tốc",
+      "Chụp 20fps liên tục, không blackout",
+      "Quay 4K 60fps video chuyên nghiệp",
+      "LAN port cho truyền ảnh tốc độ cao",
+      "Real-time Eye AF & Bird AF"
+    ]
+  }
+];
+
+// =========================
+// RENDER PRODUCT CARDS
+// =========================
+function renderProductCards() {
+  const grid = document.getElementById("product-grid");
+  if (!grid) return;
+
+  grid.innerHTML = PRODUCTS.map((p) => `
+    <div class="product-card" onclick="openProductModal(${p.id})">
+      <span class="product-badge">${p.badge}</span>
+      <img src="${p.image}" alt="${p.imageAlt}" loading="lazy" />
+      <div class="content">
+        <p class="product-category">${p.category}</p>
+        <h3>${p.name}</h3>
+        <div class="rating">${p.rating}</div>
+        <p class="price">${p.price}</p>
+        <button class="view-detail-btn" onclick="event.stopPropagation(); openProductModal(${p.id})">
+          <i class="fa-solid fa-eye"></i> Xem chi tiết
+        </button>
+      </div>
+    </div>
+  `).join("");
+}
+
+// =========================
+// PRODUCT DETAIL MODAL
+// =========================
+function openProductModal(id) {
+  const p = PRODUCTS[id];
+  if (!p) return;
+
+  document.getElementById("pdBadge").textContent = p.badge;
+  document.getElementById("pdImage").src = p.image;
+  document.getElementById("pdImage").alt = p.imageAlt;
+  document.getElementById("pdCategory").textContent = p.category;
+  document.getElementById("pdName").textContent = p.name;
+  document.getElementById("pdRating").textContent = p.rating;
+  document.getElementById("pdPrice").textContent = p.price;
+  document.getElementById("pdDesc").textContent = p.description;
+
+  const specsList = document.getElementById("pdSpecs");
+  specsList.innerHTML = p.specs.map((s) => `<li><i class="fa-solid fa-check"></i>${s}</li>`).join("");
+
+  const addBtn = document.getElementById("pdAddCart");
+  addBtn.onclick = function () {
+    addToCart(p.name, p.priceRaw);
+  };
+
+  const modal = document.getElementById("productDetailModal");
+  modal.classList.add("active");
+  document.body.style.overflow = "hidden";
+}
+
+function closeProductModal() {
+  const modal = document.getElementById("productDetailModal");
+  modal.classList.remove("active");
+  document.body.style.overflow = "";
+}
+
+// Close modal on overlay click
+document.addEventListener("DOMContentLoaded", function () {
+  const modal = document.getElementById("productDetailModal");
+  if (modal) {
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) closeProductModal();
+    });
+  }
+
+  const pdClose = document.getElementById("pdClose");
+  if (pdClose) {
+    pdClose.addEventListener("click", closeProductModal);
+  }
+
+  // Render cards
+  renderProductCards();
+});
+
+
+// =========================
 // HERO BANNER / SLIDER
 // =========================
 let currentSlide = 0;
@@ -72,7 +276,71 @@ function autoPlaySlider() {
 // Initialize on page load
 document.addEventListener("DOMContentLoaded", function () {
   initSlider();
+  // Init Login form behaviors
+  if (typeof initLoginForm === "function") {
+    initLoginForm();
+  }
 });
+
+// =========================
+// PASSWORD STRENGTH LOGIC
+// =========================
+function initPasswordStrength() {
+  const regPassword = document.getElementById("regPassword");
+  const container = document.getElementById("pwdStrengthContainer");
+  const fill = document.getElementById("pwdStrengthFill");
+  const text = document.getElementById("pwdStrengthText");
+  
+  if (!regPassword || !container) return;
+
+  regPassword.addEventListener("input", function() {
+    const val = this.value;
+    if (val.length === 0) {
+      container.style.display = "none";
+      return;
+    }
+    container.style.display = "flex";
+
+    let score = 0;
+    if (val.length >= 6) score++;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+
+    let width = "0%";
+    let color = "#ff3333";
+    let status = "Rất yếu";
+
+    if (score === 1 || score === 2) {
+      width = "40%";
+      color = "#ff9933";
+      status = "Yếu";
+    } else if (score === 3) {
+      width = "60%";
+      color = "#ffcc00";
+      status = "Trung bình";
+    } else if (score === 4) {
+      width = "80%";
+      color = "#99cc33";
+      status = "Khá";
+    } else if (score >= 5) {
+      width = "100%";
+      color = "#22c55e";
+      status = "Mạnh";
+    } else if (score === 0 && val.length > 0) {
+      width = "20%";
+      color = "#ff3333";
+      status = "Rất yếu";
+    }
+
+    fill.style.width = width;
+    fill.style.backgroundColor = color;
+    text.textContent = status;
+    text.style.color = color;
+  });
+}
+
 
 // =========================
 // CART DATA
@@ -93,11 +361,24 @@ function updateCartCount() {
 // =========================
 // SHOW NOTIFICATION
 // =========================
-function showNotification(message) {
+function showNotification(message, forceType = null) {
   const notification = document.getElementById("notification");
   if (!notification) return;
 
   notification.textContent = message;
+  notification.classList.remove("show", "success", "error");
+
+  let type = forceType;
+  if (!type) {
+    const msgLower = message.toLowerCase();
+    if (message.includes("❌") || message.includes("⚠️") || msgLower.includes("thất bại") || msgLower.includes("trống") || msgLower.includes("không hợp lệ") || msgLower.includes("chưa") || msgLower.includes("lỗi")) {
+      type = "error";
+    } else {
+      type = "success";
+    }
+  }
+
+  notification.classList.add(type);
   notification.classList.add("show");
 
   setTimeout(() => {
@@ -769,6 +1050,11 @@ document.addEventListener("DOMContentLoaded", function () {
   // INITIAL CART COUNT
   // =========================
   updateCartCount();
+
+  // =========================
+  // PASSWORD STRENGTH
+  // =========================
+  initPasswordStrength();
 
   // =========================
   // MOBILE MENU
