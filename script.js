@@ -331,9 +331,9 @@ function renderProductCards(productsToRender = PRODUCTS) {
           <img src="${p.image}" alt="${p.imageAlt}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;" />
         </div>
 
-        <div class="content" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="content">
           <p class="product-category">${p.brand} &bull; ${p.category}</p>
-          <h3 style="flex-grow: 1; margin-bottom: 6px;">${p.name}</h3>
+          <h3>${p.name}</h3>
           
           <div class="rating" style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
             <span style="color: #ffd166; font-size: 0.95rem;">★</span>
@@ -341,25 +341,29 @@ function renderProductCards(productsToRender = PRODUCTS) {
             <span style="color: var(--text-muted); font-size: 0.8rem;">(${p.reviews} đánh giá)</span>
           </div>
 
-          <p class="product-desc" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+          <p class="product-desc">
             ${p.shortDesc}
           </p>
 
-          <p class="price" style="margin-top: auto; padding-top: 6px;">
+          <p class="price">
             ${p.price}${oldPriceHtml}
           </p>
           ${stockIndicatorHtml}
 
           <div class="card-actions-grid">
-            <button class="view-detail-btn" onclick="event.stopPropagation(); openProductModal(${p.id})" title="Xem chi tiết">
+            <!-- Row 1: Chi tiết — full width -->
+            <button class="view-detail-btn card-detail-row" onclick="event.stopPropagation(); openProductModal(${p.id})" title="Xem chi tiết">
               <i class="fa-solid fa-eye"></i> Chi tiết
             </button>
-            <button class="card-add-btn" onclick="event.stopPropagation(); addToCart(${p.id}, 1)" ${isOutOfStock ? 'disabled' : ''} style="width: 100%; padding: 10px; background: ${isOutOfStock ? 'rgba(255,255,255,0.05)' : 'rgba(0, 212, 255, 0.15)'}; border: 1px solid ${isOutOfStock ? 'var(--border)' : 'var(--primary)'}; color: ${isOutOfStock ? 'var(--text-muted)' : 'var(--primary)'}; border-radius: var(--radius-sm); cursor: ${isOutOfStock ? 'not-allowed' : 'pointer'}; font-weight: 700; transition: var(--transition);" title="Thêm vào giỏ hàng">
-              <i class="fa-solid fa-cart-plus"></i> Thêm
-            </button>
-            <button class="card-buy-now-btn" onclick="event.stopPropagation(); buyNow(${p.id})" ${isOutOfStock ? 'disabled' : ''} title="Mua ngay và thanh toán">
-              <i class="fa-solid fa-bolt"></i> Mua ngay
-            </button>
+            <!-- Row 2: Thêm (40%) + Mua ngay (60%) -->
+            <div class="card-row2">
+              <button class="card-add-btn" onclick="event.stopPropagation(); addToCart(${p.id}, 1)" ${isOutOfStock ? 'disabled' : ''} title="Thêm vào giỏ hàng">
+                <i class="fa-solid fa-cart-plus"></i> Thêm
+              </button>
+              <button class="card-buy-now-btn" onclick="event.stopPropagation(); buyNow(${p.id})" ${isOutOfStock ? 'disabled' : ''} title="Mua ngay và thanh toán">
+                <i class="fa-solid fa-bolt"></i> Mua ngay
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -670,54 +674,34 @@ function openProductModal(id) {
     specsList.innerHTML = p.specs.map(s => `<li><i class="fa-solid fa-check"></i> ${s}</li>`).join("");
   }
 
-  // Stock status notice
-  let stockHtml = "";
-  const addBtn = document.getElementById("pdAddCart");
-  const buyNowBtn = document.getElementById("pdBuyNow");
-
-  if (isOutOfStock) {
-    stockHtml = `<div style="color: var(--accent); margin-top: 15px; font-weight: 700; font-size: 0.95rem; background: rgba(255, 107, 91, 0.1); padding: 8px 14px; border-radius: var(--radius-sm); border: 1px solid rgba(255, 107, 91, 0.3);"><i class="fa-solid fa-circle-xmark"></i> Hiện tại sản phẩm đã hết hàng trong kho.</div>`;
-    if (addBtn) {
-      addBtn.disabled = true;
-      addBtn.style.opacity = "0.4";
-      addBtn.style.cursor = "not-allowed";
-    }
-    if (buyNowBtn) {
-      buyNowBtn.disabled = true;
-      buyNowBtn.style.opacity = "0.4";
-      buyNowBtn.style.cursor = "not-allowed";
-    }
-  } else {
-    const stockColor = isLowStock ? "#ffcc00" : "#22c55e";
-    const stockBg = isLowStock ? "rgba(255, 204, 0, 0.1)" : "rgba(34, 197, 94, 0.1)";
-    const stockIcon = isLowStock ? "fa-triangle-exclamation" : "fa-circle-check";
-    stockHtml = `<div style="color: ${stockColor}; margin-top: 15px; font-weight: 700; font-size: 0.95rem; background: ${stockBg}; padding: 8px 14px; border-radius: var(--radius-sm); border: 1px solid ${stockColor}40;"><i class="fa-solid ${stockIcon}"></i> Còn ${p.stock} sản phẩm sẵn có tại showroom</div>`;
-
-    if (addBtn) {
-      addBtn.disabled = false;
-      addBtn.style.opacity = "1";
-      addBtn.style.cursor = "pointer";
-      addBtn.onclick = () => addToCart(p.id, 1);
-    }
-
-    if (buyNowBtn) {
-      buyNowBtn.disabled = false;
-      buyNowBtn.style.opacity = "1";
-      buyNowBtn.style.cursor = "pointer";
-      buyNowBtn.onclick = () => buyNow(p.id);
-    }
-  }
+  // Stock status — display as info badge inside modal (no action buttons)
 
   let stockEl = document.getElementById("pdStock");
-  if (!stockEl && addBtn) {
+  if (!stockEl) {
     stockEl = document.createElement("div");
     stockEl.id = "pdStock";
-    addBtn.parentElement.parentNode.insertBefore(stockEl, addBtn.parentElement);
+    stockEl.style.marginTop = "14px";
+    const specsWrap = document.querySelector(".pd-specs-wrap");
+    if (specsWrap && specsWrap.parentNode) {
+      specsWrap.parentNode.appendChild(stockEl);
+    }
   }
-  if (stockEl) stockEl.innerHTML = stockHtml;
+  if (stockEl) {
+    if (isOutOfStock) {
+      stockEl.innerHTML = `<div style="color: var(--accent); font-weight: 700; font-size: 0.9rem; background: rgba(255, 107, 91, 0.1); padding: 8px 14px; border-radius: var(--radius-sm); border: 1px solid rgba(255, 107, 91, 0.3);"><i class="fa-solid fa-circle-xmark"></i> Hiện tại sản phẩm đã hết hàng — vui lòng kiểm tra lại sau.</div>`;
+    } else {
+      const stockColor = isLowStock ? "#ffcc00" : "#22c55e";
+      const stockBg   = isLowStock ? "rgba(255,204,0,0.08)" : "rgba(34,197,94,0.08)";
+      const stockIcon = isLowStock ? "fa-triangle-exclamation" : "fa-circle-check";
+      stockEl.innerHTML = `<div style="color: ${stockColor}; font-weight: 700; font-size: 0.9rem; background: ${stockBg}; padding: 8px 14px; border-radius: var(--radius-sm); border: 1px solid ${stockColor}40;"><i class="fa-solid ${stockIcon}"></i> Còn ${p.stock} sản phẩm sẵn có tại showroom</div>`;
+    }
+  }
+
 
   const modal = document.getElementById("productDetailModal");
   if (modal) {
+    const infoPanel = modal.querySelector(".pd-info-panel");
+    if (infoPanel) infoPanel.scrollTop = 0;
     modal.classList.add("active");
     document.body.style.overflow = "hidden";
   }
@@ -856,19 +840,21 @@ function showCartItems() {
         if (!product) return "";
 
         return `
-          <div class="checkout-summary-item">
-            <img class="summary-item-img" src="${product.image}" alt="${product.imageAlt}" />
-            <div class="summary-item-info">
-              <h4>${product.name}</h4>
-              <div class="qty-control">
+          <div class="checkout-summary-item cart-item">
+            <img class="summary-item-img cart-item-img" src="${product.image}" alt="${product.imageAlt}" />
+            <div class="summary-item-info cart-item-info">
+              <h4 class="cart-item-name" title="${product.name}">${product.name}</h4>
+              <div class="qty-control cart-item-qty">
                 <span class="qty-label">Số lượng:</span>
                 <button type="button" class="qty-btn" onclick="updateCartQuantity(${item.id}, -1)">-</button>
                 <span class="qty-val">${item.quantity}</span>
                 <button type="button" class="qty-btn" onclick="updateCartQuantity(${item.id}, 1)">+</button>
-                <button type="button" class="remove-item-btn" onclick="removeFromCart(${item.id})">✕ Xóa</button>
               </div>
             </div>
-            <span class="summary-item-price">${formatPrice(product.priceRaw * item.quantity)}</span>
+            <div class="cart-item-right">
+              <span class="summary-item-price cart-item-price">${formatPrice(product.priceRaw * item.quantity)}</span>
+              <button type="button" class="remove-item-btn" onclick="removeFromCart(${item.id})" title="Xóa khỏi giỏ hàng">✕ Xóa</button>
+            </div>
           </div>
         `;
       }).join("");
