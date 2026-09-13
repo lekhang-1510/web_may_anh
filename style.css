@@ -3179,38 +3179,144 @@ a {
   box-shadow: 0 0 20px rgba(255, 107, 91, 0.35), inset 0 0 10px rgba(255, 107, 91, 0.2);
 }
 
-/* Password Strength */
+/* ==========================================
+   PASSWORD STRENGTH INDICATOR (SEGMENTED)
+========================================== */
 .password-strength-container {
   display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: -6px;
+  margin-bottom: 16px;
+  padding: 0 4px;
+  animation: pwdStrengthFadeIn 0.25s ease-out;
+}
+
+@keyframes pwdStrengthFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.strength-header {
+  display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: -10px;
-  margin-bottom: 15px;
-  padding: 0 5px;
+  justify-content: space-between;
+  gap: 12px;
 }
 
-.password-strength-bar {
+.password-strength-segments {
   flex: 1;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 5px;
 }
 
-.strength-fill {
+.strength-segment {
+  flex: 1;
   height: 100%;
-  width: 0%;
-  background: #ff3333;
-  transition: width 0.3s ease, background-color 0.3s ease;
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 4px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.strength-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.strength-dot {
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  background: #ef4444;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
 }
 
 .strength-text {
-  font-size: 0.75rem;
+  font-size: 12.5px;
   font-weight: 600;
-  color: var(--text-muted);
-  width: 70px;
-  text-align: right;
+  letter-spacing: 0.2px;
+  transition: color 0.3s ease;
+  user-select: none;
+}
+
+/* Level 1: Yếu (Đỏ cam #ef4444) */
+.password-strength-container.strength-weak .strength-segment:nth-child(1) {
+  background-color: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+.password-strength-container.strength-weak .strength-dot {
+  background-color: #ef4444;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+}
+.password-strength-container.strength-weak .strength-text {
+  color: #f87171;
+}
+
+/* Level 2: Trung bình (Cam #f97316) */
+.password-strength-container.strength-medium .strength-segment:nth-child(-n+2) {
+  background-color: #f97316;
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.4);
+}
+.password-strength-container.strength-medium .strength-dot {
+  background-color: #f97316;
+  box-shadow: 0 0 6px rgba(249, 115, 22, 0.6);
+}
+.password-strength-container.strength-medium .strength-text {
+  color: #fb923c;
+}
+
+/* Level 3: Khá (Vàng ánh cam #eab308) */
+.password-strength-container.strength-good .strength-segment:nth-child(-n+3) {
+  background-color: #eab308;
+  box-shadow: 0 0 8px rgba(234, 179, 8, 0.4);
+}
+.password-strength-container.strength-good .strength-dot {
+  background-color: #eab308;
+  box-shadow: 0 0 6px rgba(234, 179, 8, 0.6);
+}
+.password-strength-container.strength-good .strength-text {
+  color: #fde047;
+}
+
+/* Level 4: Mạnh (Xanh lá #22c55e) */
+.password-strength-container.strength-strong .strength-segment:nth-child(-n+4) {
+  background-color: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.45);
+}
+.password-strength-container.strength-strong .strength-dot {
+  background-color: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.7);
+}
+.password-strength-container.strength-strong .strength-text {
+  color: #4ade80;
+}
+
+/* Gợi ý tinh tế dưới progress bar */
+.strength-hint {
+  font-size: 11.5px;
+  color: var(--text-secondary, #94a3b8);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1.35;
+  transition: color 0.3s ease;
+}
+
+.strength-hint i {
+  font-size: 11px;
 }
 
 /* =========================

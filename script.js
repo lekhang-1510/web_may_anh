@@ -1660,6 +1660,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function closeAuthModal() {
     if (authModal) authModal.classList.remove("show");
+    resetPasswordStrength();
   }
 
   function switchTab(tabName) {
@@ -1667,6 +1668,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (loginForm) loginForm.style.display = tabName === "login" ? "block" : "none";
     if (registerForm) registerForm.style.display = tabName === "register" ? "block" : "none";
     if (forgotForm) forgotForm.style.display = tabName === "forgot" ? "block" : "none";
+    if (tabName !== "register") {
+      resetPasswordStrength();
+    }
   }
 
   if (accountBtn) accountBtn.addEventListener("click", () => openAuthModal("login"));
@@ -1699,6 +1703,121 @@ document.addEventListener("DOMContentLoaded", function () {
       btn.querySelector("i")?.classList.toggle("fa-eye-slash", isHidden);
     });
   });
+
+  // ==========================================
+  // PASSWORD STRENGTH INDICATOR
+  // ==========================================
+  const regPasswordInput = document.getElementById("regPassword");
+  const pwdStrengthContainer = document.getElementById("pwdStrengthContainer");
+  const pwdStrengthText = document.getElementById("pwdStrengthText");
+  const pwdStrengthDot = document.getElementById("pwdStrengthDot");
+  const pwdStrengthHint = document.getElementById("pwdStrengthHint");
+
+  function resetPasswordStrength() {
+    if (!pwdStrengthContainer) return;
+    pwdStrengthContainer.style.display = "none";
+    pwdStrengthContainer.className = "password-strength-container";
+    if (pwdStrengthText) pwdStrengthText.textContent = "Yếu";
+    if (pwdStrengthDot) {
+      pwdStrengthDot.className = "strength-dot";
+      pwdStrengthDot.innerHTML = "";
+    }
+    if (pwdStrengthHint) pwdStrengthHint.innerHTML = "";
+  }
+
+  function evaluatePasswordStrength() {
+    if (!regPasswordInput || !pwdStrengthContainer) return;
+    const pwd = regPasswordInput.value;
+
+    // Chỉ hiện ra khi người dùng bắt đầu gõ (ẩn khi ô trống)
+    if (!pwd || pwd.length === 0) {
+      resetPasswordStrength();
+      return;
+    }
+
+    pwdStrengthContainer.style.display = "flex";
+
+    // Tiêu chí cộng điểm:
+    // 1. Độ dài mật khẩu (>=8 ký tự, >=12 ký tự)
+    // 2. Chữ thường
+    // 3. Chữ hoa
+    // 4. Số
+    // 5. Ký tự đặc biệt
+    const hasLower = /[a-z]/.test(pwd);
+    const hasUpper = /[A-Z]/.test(pwd);
+    const hasNumber = /[0-9]/.test(pwd);
+    const hasSpecial = /[^a-zA-Z0-9]/.test(pwd);
+    const isLen8 = pwd.length >= 8;
+    const isLen12 = pwd.length >= 12;
+
+    let score = 0;
+    if (isLen8) score += 1;
+    if (isLen12) score += 1;
+    if (hasLower) score += 1;
+    if (hasUpper) score += 1;
+    if (hasNumber) score += 1;
+    if (hasSpecial) score += 1;
+
+    // Tổng điểm chia thành 4 mức:
+    // Yếu (đỏ #ef4444) -> Trung bình (cam #f97316) -> Khá (vàng #eab308) -> Mạnh (xanh lá #22c55e)
+    let levelClass = "strength-weak";
+    let levelText = "Yếu";
+    let isStrong = false;
+    let hintHtml = "";
+
+    if (pwd.length < 6) {
+      levelClass = "strength-weak";
+      levelText = "Yếu";
+      hintHtml = '<i class="fa-solid fa-circle-info"></i> Tối thiểu 6 ký tự (khuyến nghị ≥8)';
+    } else if (score >= 5) {
+      levelClass = "strength-strong";
+      levelText = "Mạnh";
+      isStrong = true;
+      hintHtml = '<i class="fa-solid fa-circle-check" style="color:#22c55e"></i> Mật khẩu an toàn và bảo mật cao';
+    } else if (score >= 4) {
+      levelClass = "strength-good";
+      levelText = "Khá";
+      const missing = !hasSpecial ? "thêm ký tự đặc biệt (!@#$)" : (!isLen12 ? "kéo dài ≥12 ký tự" : "thêm ký tự");
+      hintHtml = `<i class="fa-solid fa-circle-info"></i> Gợi ý: ${missing} để đạt mức Mạnh`;
+    } else if (score >= 3) {
+      levelClass = "strength-medium";
+      levelText = "Trung bình";
+      const missing = [];
+      if (!hasUpper) missing.push("chữ in hoa");
+      if (!hasNumber) missing.push("chữ số");
+      if (!hasSpecial) missing.push("ký tự đặc biệt");
+      const tip = missing.length > 0 ? `Thêm ${missing.join(", ")}` : "Tăng độ dài mật khẩu ≥8 ký tự";
+      hintHtml = `<i class="fa-solid fa-circle-info"></i> Gợi ý: ${tip}`;
+    } else {
+      levelClass = "strength-weak";
+      levelText = "Yếu";
+      hintHtml = '<i class="fa-solid fa-circle-exclamation" style="color:#ef4444"></i> Mật khẩu yếu, hãy kết hợp chữ hoa, số và ký tự';
+    }
+
+    pwdStrengthContainer.className = `password-strength-container ${levelClass}`;
+    if (pwdStrengthText) pwdStrengthText.textContent = levelText;
+
+    if (pwdStrengthDot) {
+      if (isStrong) {
+        pwdStrengthDot.className = "strength-dot is-check";
+        pwdStrengthDot.innerHTML = '<i class="fa-solid fa-check"></i>';
+      } else {
+        pwdStrengthDot.className = "strength-dot";
+        pwdStrengthDot.innerHTML = "";
+      }
+    }
+
+    if (pwdStrengthHint) {
+      pwdStrengthHint.innerHTML = hintHtml;
+    }
+  }
+
+  if (regPasswordInput) {
+    regPasswordInput.addEventListener("input", evaluatePasswordStrength);
+  }
+  if (registerForm) {
+    registerForm.addEventListener("reset", resetPasswordStrength);
+  }
 
   // User avatar dropdown
   if (userProfileWrapper) {
@@ -1786,6 +1905,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       showNotification("✅ Đăng ký tài khoản thành công! Vui lòng đăng nhập.");
       registerForm.reset();
+      resetPasswordStrength();
       switchTab("login");
       const loginEmailInput = document.getElementById("loginEmail");
       if (loginEmailInput) loginEmailInput.value = email;

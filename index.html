@@ -302,7 +302,7 @@
                     </div>
 
                     <div class="form-group-custom">
-                      <label for="installmentTerm">Kỳ hạn trả góp:</label>
+                      <label for="installmentTerm">Kỳ hạn:</label>
                       <select id="installmentTerm">
                         <option value="3">3 tháng (0% lãi suất)</option>
                         <option value="6">6 tháng (0% lãi suất)</option>
@@ -1058,10 +1058,19 @@
           </div>
           
           <div class="password-strength-container" id="pwdStrengthContainer" style="display: none;">
-            <div class="password-strength-bar">
-              <div class="strength-fill" id="pwdStrengthFill"></div>
+            <div class="strength-header">
+              <div class="password-strength-segments" id="pwdStrengthSegments">
+                <span class="strength-segment"></span>
+                <span class="strength-segment"></span>
+                <span class="strength-segment"></span>
+                <span class="strength-segment"></span>
+              </div>
+              <div class="strength-status">
+                <span class="strength-dot" id="pwdStrengthDot"></span>
+                <span class="strength-text" id="pwdStrengthText">Yếu</span>
+              </div>
             </div>
-            <span class="strength-text" id="pwdStrengthText">Yếu</span>
+            <div class="strength-hint" id="pwdStrengthHint"></div>
           </div>
 
           <div class="auth-input-group">
