@@ -490,43 +490,43 @@
                   <div class="mega-col">
                     <h3>Máy ảnh</h3>
                     <ul>
-                      <li><a href="#">Máy ảnh CANON</a></li>
-                      <li><a href="#">Máy ảnh SONY</a></li>
-                      <li><a href="#">Máy ảnh FUJIFILM</a></li>
-                      <li><a href="#">Máy ảnh NIKON</a></li>
+                      <li><a href="#products" class="mega-filter-link" data-filter-brand="Canon">Máy ảnh CANON</a></li>
+                      <li><a href="#products" class="mega-filter-link" data-filter-brand="Sony">Máy ảnh SONY</a></li>
+                      <li><a href="#products" class="mega-filter-link" data-filter-brand="Fujifilm">Máy ảnh FUJIFILM</a></li>
+                      <li><a href="#products" class="mega-filter-link" data-filter-brand="Nikon">Máy ảnh NIKON</a></li>
                     </ul>
                   </div>
                   <!-- Column 2: Ống kính -->
                   <div class="mega-col">
-                    <h3>Ống kính / Lens</h3>
+                    <h3>Dòng máy ảnh</h3>
                     <ul>
-                      <li><a href="#">Ống kính Prime</a></li>
-                      <li><a href="#">Ống kính Zoom</a></li>
-                      <li><a href="#">Ống kính Cinema</a></li>
-                      <li><a href="#">Ống kính Macro</a></li>
+                      <li><a href="#products" class="mega-filter-link" data-filter-cat="Mirrorless Full-frame">Mirrorless Full-frame</a></li>
+                      <li><a href="#products" class="mega-filter-link" data-filter-cat="Pro Mirrorless">Flagship Mirrorless</a></li>
+                      <li><a href="#products" class="mega-filter-link" data-filter-cat="APS-C Creative">APS-C Hoài Cổ / Vlogging</a></li>
+                      <li><a href="#products" class="mega-filter-link" data-filter-cat="DSLR Full-frame">DSLR Chuyên Nghiệp</a></li>
                     </ul>
                   </div>
                   <!-- Column 3: Phụ kiện -->
                   <div class="mega-col">
-                    <h3>Phụ kiện</h3>
+                    <h3>Hỗ trợ & Tư vấn</h3>
                     <ul>
-                      <li><a href="#">Chân máy (Tripod)</a></li>
-                      <li><a href="#">Đèn Flash & Lighting</a></li>
-                      <li><a href="#">Thẻ nhớ & Lưu trữ</a></li>
-                      <li><a href="#">Balo & Túi máy ảnh</a></li>
+                      <li><a href="#contact" class="mega-consult-link"><i class="fa-solid fa-headset"></i> Chân máy & Tripod</a></li>
+                      <li><a href="#contact" class="mega-consult-link"><i class="fa-solid fa-bolt"></i> Đèn Flash & Lighting</a></li>
+                      <li><a href="#contact" class="mega-consult-link"><i class="fa-solid fa-sd-card"></i> Thẻ nhớ & Ổ lưu trữ</a></li>
+                      <li><a href="#contact" class="mega-consult-link"><i class="fa-solid fa-shield"></i> Gói bảo hành KNG Care</a></li>
                     </ul>
                   </div>
                   <!-- Column 4: Banner Quảng cáo -->
                   <div class="mega-col banner-col">
                     <div class="mega-banner">
                       <img
-                        src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=400&q=80"
+                        src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?auto=format&fit=crop&w=400&q=80"
                         alt="Canon EOS R5"
                       />
                       <div class="banner-content">
-                        <span class="badge">New Arrival</span>
+                        <span class="badge">Best Seller</span>
                         <h4>Canon EOS R5 Pro</h4>
-                        <a href="#" class="banner-btn" onclick="openProductModal(0); return false;"
+                        <a href="#products" class="banner-btn" onclick="openProductModal(0); return false;"
                           >Khám phá ngay <i class="fa-solid fa-arrow-right"></i
                         ></a>
                       </div>
@@ -675,12 +675,61 @@
           </p>
         </div>
 
-        <div class="product-filters" id="productFilters">
-          <button class="filter-btn active" data-brand="all">Tất cả</button>
-          <button class="filter-btn" data-brand="Canon">Canon</button>
-          <button class="filter-btn" data-brand="Sony">Sony</button>
-          <button class="filter-btn" data-brand="Nikon">Nikon</button>
-          <button class="filter-btn" data-brand="Fujifilm">Fujifilm</button>
+        <div class="product-filters-wrapper">
+          <!-- Hãng sản xuất -->
+          <div class="product-filters" id="productFilters">
+            <button class="filter-btn active" data-brand="all"><i class="fa-solid fa-border-all"></i> Tất cả</button>
+            <button class="filter-btn" data-brand="Canon">Canon</button>
+            <button class="filter-btn" data-brand="Sony">Sony</button>
+            <button class="filter-btn" data-brand="Nikon">Nikon</button>
+            <button class="filter-btn" data-brand="Fujifilm">Fujifilm</button>
+          </div>
+
+          <!-- Bộ lọc chi tiết & Sắp xếp -->
+          <div class="advanced-filters-row">
+            <div class="filter-dropdown-group">
+              <label for="categoryFilter"><i class="fa-solid fa-tags"></i> Danh mục:</label>
+              <select id="categoryFilter" class="filter-select">
+                <option value="all">Tất cả danh mục</option>
+                <option value="Mirrorless Full-frame">Mirrorless Full-frame</option>
+                <option value="Mirrorless 61MP">Mirrorless 61MP</option>
+                <option value="Pro Mirrorless">Pro Mirrorless</option>
+                <option value="APS-C Creative">APS-C Creative (Hoài cổ)</option>
+                <option value="Hybrid Camera">Hybrid Camera</option>
+                <option value="DSLR Full-frame">DSLR Full-frame</option>
+                <option value="Speed Performance">Speed Performance</option>
+              </select>
+            </div>
+
+            <div class="filter-dropdown-group">
+              <label for="priceFilter"><i class="fa-solid fa-money-bill-wave"></i> Mức giá:</label>
+              <select id="priceFilter" class="filter-select">
+                <option value="all">Tất cả mức giá</option>
+                <option value="under50">Dưới 50 triệu</option>
+                <option value="50to100">50 - 100 triệu</option>
+                <option value="over100">Trên 100 triệu</option>
+              </select>
+            </div>
+
+            <div class="filter-dropdown-group">
+              <label for="sortFilter"><i class="fa-solid fa-arrow-down-wide-short"></i> Sắp xếp:</label>
+              <select id="sortFilter" class="filter-select">
+                <option value="default">Mặc định</option>
+                <option value="priceAsc">Giá: Thấp đến Cao</option>
+                <option value="priceDesc">Giá: Cao đến Thấp</option>
+                <option value="ratingDesc">Đánh giá cao nhất</option>
+                <option value="reviewDesc">Phổ biến nhất</option>
+              </select>
+            </div>
+
+            <button type="button" class="reset-filter-btn" id="resetFilterBtn" title="Xóa tất cả bộ lọc">
+              <i class="fa-solid fa-rotate-left"></i> Đặt lại
+            </button>
+          </div>
+
+          <div class="results-counter-bar" id="resultsCounter">
+            <!-- Rendered by JS -->
+          </div>
         </div>
 
         <div class="product-grid" id="product-grid">
@@ -738,10 +787,10 @@
         </div>
 
         <div class="brand-grid">
-          <div class="brand-card">Canon</div>
-          <div class="brand-card">Sony</div>
-          <div class="brand-card">Nikon</div>
-          <div class="brand-card">Fujifilm</div>
+          <div class="brand-card" data-brand-filter="Canon" title="Xem tất cả máy ảnh Canon"><i class="fa-solid fa-camera"></i> Canon</div>
+          <div class="brand-card" data-brand-filter="Sony" title="Xem tất cả máy ảnh Sony"><i class="fa-solid fa-camera"></i> Sony</div>
+          <div class="brand-card" data-brand-filter="Nikon" title="Xem tất cả máy ảnh Nikon"><i class="fa-solid fa-camera"></i> Nikon</div>
+          <div class="brand-card" data-brand-filter="Fujifilm" title="Xem tất cả máy ảnh Fujifilm"><i class="fa-solid fa-camera"></i> Fujifilm</div>
         </div>
       </div>
     </section>
