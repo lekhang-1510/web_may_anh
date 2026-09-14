@@ -1713,36 +1713,15 @@ document.addEventListener("DOMContentLoaded", function () {
   const pwdStrengthDot = document.getElementById("pwdStrengthDot");
   const pwdStrengthHint = document.getElementById("pwdStrengthHint");
 
-  function resetPasswordStrength() {
-    if (!pwdStrengthContainer) return;
-    pwdStrengthContainer.style.display = "none";
-    pwdStrengthContainer.className = "password-strength-container";
-    if (pwdStrengthText) pwdStrengthText.textContent = "Yếu";
-    if (pwdStrengthDot) {
-      pwdStrengthDot.className = "strength-dot";
-      pwdStrengthDot.innerHTML = "";
-    }
-    if (pwdStrengthHint) pwdStrengthHint.innerHTML = "";
-  }
+  const regConfirmPasswordInput = document.getElementById("regConfirmPassword");
+  const confirmPwdStrengthContainer = document.getElementById("confirmPwdStrengthContainer");
+  const confirmPwdStrengthText = document.getElementById("confirmPwdStrengthText");
+  const confirmPwdStrengthDot = document.getElementById("confirmPwdStrengthDot");
+  const confirmPwdStrengthHint = document.getElementById("confirmPwdStrengthHint");
 
-  function evaluatePasswordStrength() {
-    if (!regPasswordInput || !pwdStrengthContainer) return;
-    const pwd = regPasswordInput.value;
+  function getStrengthData(pwd) {
+    if (!pwd || pwd.length === 0) return null;
 
-    // Chỉ hiện ra khi người dùng bắt đầu gõ (ẩn khi ô trống)
-    if (!pwd || pwd.length === 0) {
-      resetPasswordStrength();
-      return;
-    }
-
-    pwdStrengthContainer.style.display = "flex";
-
-    // Tiêu chí cộng điểm:
-    // 1. Độ dài mật khẩu (>=8 ký tự, >=12 ký tự)
-    // 2. Chữ thường
-    // 3. Chữ hoa
-    // 4. Số
-    // 5. Ký tự đặc biệt
     const hasLower = /[a-z]/.test(pwd);
     const hasUpper = /[A-Z]/.test(pwd);
     const hasNumber = /[0-9]/.test(pwd);
@@ -1758,8 +1737,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (hasNumber) score += 1;
     if (hasSpecial) score += 1;
 
-    // Tổng điểm chia thành 4 mức:
-    // Yếu (đỏ #ef4444) -> Trung bình (cam #f97316) -> Khá (vàng #eab308) -> Mạnh (xanh lá #22c55e)
     let levelClass = "strength-weak";
     let levelText = "Yếu";
     let isStrong = false;
@@ -1794,11 +1771,61 @@ document.addEventListener("DOMContentLoaded", function () {
       hintHtml = '<i class="fa-solid fa-circle-exclamation" style="color:#ef4444"></i> Mật khẩu yếu, hãy kết hợp chữ hoa, số và ký tự';
     }
 
-    pwdStrengthContainer.className = `password-strength-container ${levelClass}`;
-    if (pwdStrengthText) pwdStrengthText.textContent = levelText;
+    return { score, levelClass, levelText, isStrong, hintHtml };
+  }
+
+  function resetPasswordStrength() {
+    if (pwdStrengthContainer) {
+      pwdStrengthContainer.style.display = "none";
+      pwdStrengthContainer.className = "password-strength-container";
+    }
+    if (pwdStrengthText) pwdStrengthText.textContent = "Yếu";
+    if (pwdStrengthDot) {
+      pwdStrengthDot.className = "strength-dot";
+      pwdStrengthDot.innerHTML = "";
+    }
+    if (pwdStrengthHint) pwdStrengthHint.innerHTML = "";
+
+    if (confirmPwdStrengthContainer) {
+      confirmPwdStrengthContainer.style.display = "none";
+      confirmPwdStrengthContainer.className = "password-strength-container";
+    }
+    if (confirmPwdStrengthText) confirmPwdStrengthText.textContent = "Yếu";
+    if (confirmPwdStrengthDot) {
+      confirmPwdStrengthDot.className = "strength-dot";
+      confirmPwdStrengthDot.innerHTML = "";
+    }
+    if (confirmPwdStrengthHint) confirmPwdStrengthHint.innerHTML = "";
+  }
+
+  function evaluatePasswordStrength() {
+    if (!regPasswordInput || !pwdStrengthContainer) return;
+    const pwd = regPasswordInput.value;
+
+    if (!pwd || pwd.length === 0) {
+      pwdStrengthContainer.style.display = "none";
+      pwdStrengthContainer.className = "password-strength-container";
+      if (pwdStrengthText) pwdStrengthText.textContent = "Yếu";
+      if (pwdStrengthDot) {
+        pwdStrengthDot.className = "strength-dot";
+        pwdStrengthDot.innerHTML = "";
+      }
+      if (pwdStrengthHint) pwdStrengthHint.innerHTML = "";
+      if (regConfirmPasswordInput && regConfirmPasswordInput.value) {
+        evaluateConfirmPasswordStrength();
+      }
+      return;
+    }
+
+    const data = getStrengthData(pwd);
+    if (!data) return;
+
+    pwdStrengthContainer.style.display = "flex";
+    pwdStrengthContainer.className = `password-strength-container ${data.levelClass}`;
+    if (pwdStrengthText) pwdStrengthText.textContent = data.levelText;
 
     if (pwdStrengthDot) {
-      if (isStrong) {
+      if (data.isStrong) {
         pwdStrengthDot.className = "strength-dot is-check";
         pwdStrengthDot.innerHTML = '<i class="fa-solid fa-check"></i>';
       } else {
@@ -1808,12 +1835,66 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (pwdStrengthHint) {
-      pwdStrengthHint.innerHTML = hintHtml;
+      pwdStrengthHint.innerHTML = data.hintHtml;
+    }
+
+    if (regConfirmPasswordInput && regConfirmPasswordInput.value) {
+      evaluateConfirmPasswordStrength();
+    }
+  }
+
+  function evaluateConfirmPasswordStrength() {
+    if (!regConfirmPasswordInput || !confirmPwdStrengthContainer) return;
+    const confirmPwd = regConfirmPasswordInput.value;
+    const originalPwd = regPasswordInput ? regPasswordInput.value : "";
+
+    if (!confirmPwd || confirmPwd.length === 0) {
+      confirmPwdStrengthContainer.style.display = "none";
+      confirmPwdStrengthContainer.className = "password-strength-container";
+      if (confirmPwdStrengthText) confirmPwdStrengthText.textContent = "Yếu";
+      if (confirmPwdStrengthDot) {
+        confirmPwdStrengthDot.className = "strength-dot";
+        confirmPwdStrengthDot.innerHTML = "";
+      }
+      if (confirmPwdStrengthHint) confirmPwdStrengthHint.innerHTML = "";
+      return;
+    }
+
+    const data = getStrengthData(confirmPwd);
+    if (!data) return;
+
+    confirmPwdStrengthContainer.style.display = "flex";
+    confirmPwdStrengthContainer.className = `password-strength-container ${data.levelClass}`;
+    if (confirmPwdStrengthText) confirmPwdStrengthText.textContent = data.levelText;
+
+    if (confirmPwdStrengthDot) {
+      if (data.isStrong) {
+        confirmPwdStrengthDot.className = "strength-dot is-check";
+        confirmPwdStrengthDot.innerHTML = '<i class="fa-solid fa-check"></i>';
+      } else {
+        confirmPwdStrengthDot.className = "strength-dot";
+        confirmPwdStrengthDot.innerHTML = "";
+      }
+    }
+
+    if (confirmPwdStrengthHint) {
+      if (originalPwd) {
+        if (confirmPwd === originalPwd) {
+          confirmPwdStrengthHint.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#22c55e"></i> Mật khẩu khớp hoàn toàn';
+        } else {
+          confirmPwdStrengthHint.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="color:#ef4444"></i> Mật khẩu nhập lại chưa khớp';
+        }
+      } else {
+        confirmPwdStrengthHint.innerHTML = data.hintHtml;
+      }
     }
   }
 
   if (regPasswordInput) {
     regPasswordInput.addEventListener("input", evaluatePasswordStrength);
+  }
+  if (regConfirmPasswordInput) {
+    regConfirmPasswordInput.addEventListener("input", evaluateConfirmPasswordStrength);
   }
   if (registerForm) {
     registerForm.addEventListener("reset", resetPasswordStrength);
